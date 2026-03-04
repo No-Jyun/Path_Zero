@@ -16,6 +16,12 @@ public:
 	virtual void Tick(float deltaTime) override;
 
 private:
+	void MakeWall();
+	void MakeFire();
+	void MakeExit();
+	void MakeEmpty();
+
+private:
 
 
 };

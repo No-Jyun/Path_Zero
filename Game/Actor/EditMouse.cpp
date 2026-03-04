@@ -1,5 +1,6 @@
 #include "EditMouse.h"
 #include "Core/Input.h"
+#include "Manager/MapManager.h"
 
 EditMouse::EditMouse(const Vector2& position)
 	: super(" ", position)
@@ -30,27 +31,72 @@ void EditMouse::Tick(float deltaTime)
 	// 선택 영역 벽 생성
 	if (Input::Get().GetKeyDown('W'))
 	{
-		SelectPositionClear();
+		MakeWall();
 	}
 	// 선택 영역 불 생성
 	if (Input::Get().GetKeyDown('F'))
 	{
-		SelectPositionClear();
+		MakeFire();
 	}
 	// 선택 영역 탈출구 생성
 	if (Input::Get().GetKeyDown('E'))
 	{
-		SelectPositionClear();
+		MakeExit();
 	}
 	// 선택 영역 빈 공간으로 초기화
 	if (Input::Get().GetKeyDown('D'))
 	{
-		SelectPositionClear();
+		MakeEmpty();
 	}
 	// 선택 영역 초기화
 	if (Input::Get().GetKeyDown('R'))
 	{
 		SelectPositionClear();
 	}
+}
 
+void EditMouse::MakeWall()
+{
+	for (const Vector2& selPos : selectedPositionInMap)
+	{
+		// Todo: 현재 변경하는 타일 확인 필요
+		MapManager::Get().SetMapTile(selPos, '#');
+	}
+
+	SelectPositionClear();
+}
+
+void EditMouse::MakeFire()
+{
+	for (const Vector2& selPos : selectedPositionInMap)
+	{
+		// Todo: 현재 변경하는 타일 확인 필요
+		// Todo: 불 타일 개수 확인 필요
+		MapManager::Get().SetMapTile(selPos, 'F');
+	}
+
+	SelectPositionClear();
+}
+
+void EditMouse::MakeExit()
+{
+	for (const Vector2& selPos : selectedPositionInMap)
+	{
+		// Todo: 현재 변경하는 타일 확인 필요
+		// Todo: 탈출구 타일 개수 확인 필요
+		MapManager::Get().SetMapTile(selPos, 'X');
+	}
+
+	SelectPositionClear();
+}
+
+void EditMouse::MakeEmpty()
+{
+	for (const Vector2& selPos : selectedPositionInMap)
+	{
+		// Todo: 현재 변경하는 타일 확인 필요
+		MapManager::Get().SetMapTile(selPos, ' ');
+	}
+
+	SelectPositionClear();
 }

@@ -27,16 +27,19 @@ protected:
 	// 프로그램을 종료하는 함수
 	void QuitGame();
 
-private:
 	// 드래그 영역을 배열에 저장하는 함수
 	void DragProcess();
 
-private:
+protected:
 	Vector2 firstSelectedPosition;
 	Vector2 lastSelectedPosition;
 
 	bool isFirstClicked = true;
 
-	std::vector<Vector2> selectedPosition;
+	// 콘솔 화면에 출력할 때 사용하는 위치 배열
+	std::vector<Vector2> selectedPositionInConsole;
+
+	// 맵 타일을 변경할 때 사용하는 위치 배열
+	std::vector<Vector2> selectedPositionInMap;
 };
 

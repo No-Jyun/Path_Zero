@@ -59,7 +59,7 @@ void MouseBase::Draw()
 {
 	super::Draw();
 
-	for (const Vector2& selPos : selectedPosition)
+	for (const Vector2& selPos : selectedPositionInConsole)
 	{
 		Renderer::Get().Submit(" ", selPos, Color::BackGoundWhite, sortingOrder + 3);
 	}
@@ -70,13 +70,15 @@ void MouseBase::SelectPositionClear()
 	firstSelectedPosition = Vector2::Zero;
 	lastSelectedPosition = Vector2::Zero;
 
-	selectedPosition.clear();
+	selectedPositionInConsole.clear();
+	selectedPositionInMap.clear();
 }
 
 void MouseBase::DragProcess()
 {
 	// 현재 배열 비우기
-	selectedPosition.clear();
+	selectedPositionInConsole.clear();
+	selectedPositionInMap.clear();
 
 	// x(Row), y(Col)의 시작과 끝을 계산 (어느 방향으로 드래그해도 대응 가능하게)
 	int startX = min(firstSelectedPosition.x, lastSelectedPosition.x);
@@ -99,7 +101,8 @@ void MouseBase::DragProcess()
 			if (y < 0 || y >= maxCol) continue;
 
 			//선택 영역 저장
-			selectedPosition.emplace_back(Vector2(x, y));
+			selectedPositionInConsole.emplace_back(Vector2(x, y));
+			selectedPositionInMap.emplace_back(Vector2(y, x));
 		}
 	}
 }

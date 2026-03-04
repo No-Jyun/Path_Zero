@@ -18,8 +18,10 @@ MapManager::~MapManager()
 	std::vector<std::string>().swap(mapData);
 }
 
-void MapManager::SetMapTile(const Vector2& position)
+void MapManager::SetMapTile(const Vector2& position, const char tile)
 {
+	// 마우스로 선택된 영역은 map 영역을 벗어나지 않으므로 생략
+	mapData[position.x][position.y] = tile;
 }
 
 void MapManager::SetNewGame()
@@ -32,6 +34,8 @@ void MapManager::Initialize()
 	std::vector<std::string>().swap(mapData);
 
 	mapData.assign(mapHeight, std::string(mapWidth, ' '));
+
+	// 랜덤 플레이어 생성
 
 	// 맵 경계 설정
 	for (int j = 0; j < mapHeight; j++)

@@ -1,5 +1,6 @@
 #pragma once
 #include "Math/Vector2.h"
+#include "Math/Color.h"
 
 #include <vector>
 #include <string>
@@ -14,7 +15,7 @@ public:
 	~MapManager();
 
 	// 특정 좌표의 맵 타일을 바꾸는 함수
-	void SetMapTile(const Vector2& position);
+	void SetMapTile(const Vector2& position, const char tile);
 
 	// 게임을 새롭게 시작할 때 사용하는 함수
 	void SetNewGame();
