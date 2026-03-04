@@ -8,8 +8,8 @@ MapManager::MapManager()
 {
 	instance = this;
 
-	mapWidth = (Engine::Get().Width() / 4) * 3;
-	mapHeight = Engine::Get().Height();
+	mapWidth = (Engine::Get().Width() / 5) * 3;
+	mapHeight = Engine::Get().Height() - 2;
 }
 
 MapManager::~MapManager()

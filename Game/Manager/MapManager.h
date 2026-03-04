@@ -23,6 +23,7 @@ public:
 	inline const std::vector<std::string>& GetMapData() { return mapData; }
 	inline const int GetMapWidth() { return mapWidth; }
 	inline const int GetMapHeight() { return mapHeight; }
+	inline const char GetMapPositionData(const Vector2& position) { return mapData[position.x][position.y]; }
 
 	// ½Ì±ÛÅæ Á¢±Ù ÇÔ¼ö
 	static MapManager& Get();

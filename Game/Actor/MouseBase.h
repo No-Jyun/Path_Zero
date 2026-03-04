@@ -1,21 +1,34 @@
 #pragma once
 #include "Actor/Actor.h"
+#include "Math/Vector2.h"
 
-class MouseBase : public Wanted::Actor
+#include <vector>
+
+using namespace Wanted;
+
+class MouseBase : public Actor
 {
 	// RTTI 선언
 	RTTI_DECLARATIONS(MouseBase, Actor)
 
 public:
-	MouseBase();
+	MouseBase(const char* image = " ",
+		const Vector2& position = Vector2::Zero
+		);
 	virtual ~MouseBase();
 
 	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;
 
-private:
+protected:
+	// 현재 선택한 영역을 초기화하는 함수
 	void SelectPositionClear();
 
+	// 프로그램을 종료하는 함수
+	void QuitGame();
+
+private:
+	// 드래그 영역을 배열에 저장하는 함수
 	void DragProcess();
 
 private:

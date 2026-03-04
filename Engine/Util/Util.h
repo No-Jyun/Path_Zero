@@ -2,28 +2,24 @@
 
 #include "Math/Vector2.h"
 #include "Math/Color.h"
+#include <time.h>
+#include <cmath>
 
 using namespace Wanted;
 
-// 헬퍼 (Helper) 기능 제공
+// 헬퍼(Helper) 기능 제공.
 namespace Util
 {
-	// 콘솔 커서 위치 이동(설정)하는 함수
+	// 콘솔 커서 위치 이동(설정)하는 함수.
 	inline void SetConsolePosition(const Vector2& position)
 	{
-		// coord의 x와 y 값은 short 자료형이므로 형변환을 해야함
-		// 기본형끼리의 형변환이므로 static cast 사용
-		//coord.X = static_cast<short>(position.x);
-		//coord.Y = static_cast<short>(position.y);
-
-		// 윈도우에선 기본적으로 출력용, 입력용, 에러용 콘솔 3개를 가짐
 		SetConsoleCursorPosition(
 			GetStdHandle(STD_OUTPUT_HANDLE),
 			static_cast<COORD>(position)
 		);
 	}
 
-	// 콘솔 텍스트 설정 함수
+	// 콘솔 텍스트 설정 함수.
 	inline void SetConsoleTextColor(Color color)
 	{
 		SetConsoleTextAttribute(
@@ -32,9 +28,10 @@ namespace Util
 		);
 	}
 
-	// 커서 끄기
+	// 커서 끄기.
 	inline void TurnOffCursor()
 	{
+		// 커서 끄기.
 		CONSOLE_CURSOR_INFO info = {};
 		GetConsoleCursorInfo(
 			GetStdHandle(STD_OUTPUT_HANDLE),
@@ -48,9 +45,10 @@ namespace Util
 		);
 	}
 
-	// 커서 켜기
+	// 커서 켜기.
 	inline void TurnOnCursor()
 	{
+		// 커서 끄기.
 		CONSOLE_CURSOR_INFO info = {};
 		GetConsoleCursorInfo(
 			GetStdHandle(STD_OUTPUT_HANDLE),
@@ -63,9 +61,69 @@ namespace Util
 			&info
 		);
 	}
+
+	inline void SetRandomSeed()
+	{
+		// 시간 값을 랜덤 종자값으로 설정.
+		srand(static_cast<unsigned int>(time(nullptr)));
+	}
+
+	// 정수 난수 함수.
+	inline int Random(int min, int max)
+	{
+		int diff = (max - min) + 1;
+		return ((diff * rand()) / (RAND_MAX + 1)) + min;
+	}
+
+	// 부동소수점 난수 함수.
+	inline float RandomRange(float min, float max)
+	{
+		// 0~1사이의 float 기반 랜덤 값.
+		float random
+			= static_cast<float>(rand())
+			/ static_cast<float>(RAND_MAX);
+
+		float diff = (max - min);
+		return (random * diff) + min;
+	}
+
+	// 어떤 값을 두 수 사이로 고정할 때 사용하는 함수.
+	template<typename T>
+	T Clamp(T value, T min, T max)
+	{
+		if (value < min)
+		{
+			value = min;
+		}
+		else if (value > max)
+		{
+			value = max;
+		}
+
+		return value;
+	}
+
+	// 제곱근을 구하는 함수
+	inline float Sqrt(const float value)
+	{
+		return sqrt(value);
+	}
+
+	// float -> int 형변환시 반올림하여 구하는 함수
+	inline int FloatCastInt(const float value)
+	{
+		if (value >= 0.0f)
+		{
+			return static_cast<int>(value + 0.5f);
+		}
+		else
+		{
+			return static_cast<int>(value - 0.5f);
+		}
+	}
 }
 
-// 메모리 정리 함수
+// 메모리 정리 함수.
 template<typename T>
 void SafeDelete(T*& t)
 {
