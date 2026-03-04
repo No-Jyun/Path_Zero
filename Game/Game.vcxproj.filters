@@ -18,24 +18,30 @@
     <ClCompile Include="Main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="TestEngine.cpp">
+    <ClCompile Include="Game\Game.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="TestLevel.cpp">
+    <ClCompile Include="Level\EditLevel.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="TestActor.cpp">
+    <ClCompile Include="Actor\MouseBase.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\MapManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TestEngine.h">
+    <ClInclude Include="Game\Game.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TestLevel.h">
+    <ClInclude Include="Level\EditLevel.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TestActor.h">
+    <ClInclude Include="Actor\MouseBase.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\MapManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

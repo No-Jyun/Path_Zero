@@ -54,4 +54,15 @@ namespace Wanted
 		// 새로운 위치 설정
 		position = newPosition;
 	}
+
+	void Actor::ChangeImage(const char* newImage)
+	{
+		// 기존 메모리 해제.
+		SafeDeleteArray(image);
+
+		// 새로운 문자열 복사.
+		width = static_cast<int>(strlen(newImage));
+		image = new char[width + 1];
+		strcpy_s(image, width + 1, newImage);
+	}
 }

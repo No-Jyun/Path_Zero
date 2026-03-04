@@ -34,6 +34,9 @@ namespace Wanted
 		void SetOwner(Level* newOwner) { owner = newOwner; }
 		inline Level* GetOwner() const{ return owner; }
 
+		// 문자열 변경 함수
+		void ChangeImage(const char* newImage);
+
 		// Getter
 		inline bool HasBeganPlay() const { return hasBeganPlay; }
 		inline bool IsActive() const { return isActive && !destroyRequested; }
@@ -52,6 +55,9 @@ namespace Wanted
 
 		// 그릴 문자(이미지)
 		char* image = nullptr;
+
+		// 문자열 길이
+		int width = 0;
 
 		// 색상
 		Color color = Color::White;

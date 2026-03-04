@@ -123,22 +123,6 @@ namespace Wanted
 		isQuit = true;
 	}
 
-	void Engine::SetNewLevel(Level* newLevel)
-	{
-		// 기존 레벨 있는지 확인
-		// 있으면 기존 레벨 제거
-		// Todo : 임시 코드. 레벨 전환할 때는 바로 제거하면 안됨
-		if (mainLevel)
-		{
-			delete mainLevel;
-			mainLevel = nullptr;
-		}
-
-		// 레벨 설정
-		mainLevel = newLevel;
-
-	}
-
 	Engine& Engine::Get()
 	{
 		// 예외처리

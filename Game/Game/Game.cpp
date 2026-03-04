@@ -1,0 +1,58 @@
+#include "Game.h"
+#include "Level/EditLevel.h"
+#include "Manager/MapManager.h"
+#include "Util/Util.h"
+
+#include <Windows.h>
+
+// 정적 변수 초기화
+Game* Game::instance = nullptr;
+
+Game::Game()
+{
+	instance = this;
+
+	mapManager = new MapManager();
+
+	levels.emplace_back(new EditLevel());
+
+	mainLevel = levels[0];
+}
+
+Game::~Game()
+{
+	// 중복 제거 방지
+	mainLevel = nullptr;
+
+	SafeDelete(mapManager);
+
+	// 모든 레벨 삭제
+	for (Level*& level : levels)
+	{
+		delete level;
+		level = nullptr;
+	}
+
+	// 배열 정리
+	levels.clear();
+}
+
+Game& Game::Get()
+{
+	// 예외 처리
+	if (!instance)
+	{
+		// 오류 메시지 출력.
+		MessageBoxA(
+			nullptr,
+			"Game::Get() - instance is null",
+			"Error",
+			MB_OK
+		);
+
+		__debugbreak();
+	}
+
+	// 정적 변수 반환
+	return *instance;
+}
