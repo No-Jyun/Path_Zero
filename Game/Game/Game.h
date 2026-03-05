@@ -11,6 +11,9 @@ public:
 	Game();
 	~Game();
 
+	// 메뉴/레벨을 전환하는 함수
+	void ToggleMenu(int levelIndex);
+
 	// 싱글톤 접근 함수
 	static Game& Get();
 

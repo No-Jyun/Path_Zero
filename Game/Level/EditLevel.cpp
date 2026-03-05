@@ -3,6 +3,8 @@
 #include "Engine/Engine.h"
 #include "Render/Renderer.h"
 #include "Actor/EditMouse.h"
+#include "Core/Input.h"
+#include "Game/Game.h"
 
 const char* instructionString[] =
 {
@@ -35,12 +37,30 @@ EditLevel::~EditLevel()
 {
 }
 
+void EditLevel::Tick(float deltaTime)
+{
+	super::Tick(deltaTime);
+
+	// Todo: 레벨 토글 함수 작성
+	if (Input::Get().GetKeyDown('T'))
+	{
+		Game::Get().ToggleMenu(1);
+	}
+}
+
 void EditLevel::Draw()
 {
 	super::Draw();
 
 	DrawMap();
 	DrawInstruction();
+}
+
+void EditLevel::LevelSetting()
+{
+	MapManager::Get().SetNewGame();
+
+	//AddNewActor(new EditMouse(Vector2(0, Engine::Get().Height() - 1)));
 }
 
 void EditLevel::DrawMap()

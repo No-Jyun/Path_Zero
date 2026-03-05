@@ -33,6 +33,9 @@ private:
 	// 탐색하려는 노드가 목표 노드인지 확인하는 함수
 	bool IsDestination(const Node* const node);
 
+	// 재탐색을 위해 클리어 함수
+	void ClearSetting();
+
 private:
 	// 열린 리스트 (우선순위 큐를 사용하여 fCost가 가장 낮은 노드가 Top에 오도록 정렬됨)
 	std::priority_queue<Node*, std::vector<Node*>, Node::PtrCompare> openList;
@@ -42,9 +45,6 @@ private:
 
 	// 방문 확인 및 비용 저장용 배열
 	std::vector<std::vector<float>> visitedGCost;
-
-	// 시작 노드
-	Node* startNode = nullptr;
 
 	// 목표 노드
 	Node* goalNode = nullptr;

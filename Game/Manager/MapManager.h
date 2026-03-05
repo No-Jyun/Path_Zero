@@ -27,8 +27,9 @@ public:
 	inline const std::vector<std::string>& GetMapData() { return mapData; }
 	inline const int GetMapWidth() { return mapWidth; }
 	inline const int GetMapHeight() { return mapHeight; }
-	inline const char GetMapPositionData(const Vector2& position) { return mapData[position.x][position.y]; }
+	inline const char GetMapPositionData(const Vector2& position) { return mapData[position.y][position.x]; }
 	inline const std::vector<Vector2> GetExitPositions() { return exitPositions; }
+	inline const std::vector<Vector2> GetPlayerPositions() { return playerPositions; }
 
 	// 싱글톤 접근 함수
 	static MapManager& Get();
@@ -46,6 +47,9 @@ private:
 
 	// 탈출구를 저장할 변수
 	std::vector<Vector2> exitPositions;
+
+	// 생존자를 저장할 변수
+	std::vector<Vector2> playerPositions;
 
 	// 맵 크기 변수
 	int mapWidth = 0;

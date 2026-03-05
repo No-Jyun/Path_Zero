@@ -16,14 +16,15 @@ public:
 
 	~Node() = default;
 
+	// Getter
+	inline const float FCost() { return fCost; }
+	inline const Vector2 GetPosition() { return position; }
+
 	// 연산자 오버로딩
 	bool operator==(const Node& other) const
 	{
 		return position.x == other.position.x && position.y == other.position.y;
 	}
-
-	// Getter
-	inline const float FCost() { return fCost; }
 
 	// 우선순위 큐에서 사용할 비교 연산에 대한 구조체
 	struct PtrCompare

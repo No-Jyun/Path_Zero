@@ -12,29 +12,17 @@ AStar::AStar()
 AStar::~AStar()
 {
     // 메모리 정리
-    while (!openList.empty())
-    {
-        Node* node = openList.top();
-        openList.pop();
-        SafeDelete(node);
-    }
-
-    for (Node* node : closedList)
-    {
-        SafeDelete(node);
-    }
-    closedList.clear();
-
-    SafeDelete(goalNode);
+    ClearSetting();
 }
 
 std::vector<Node*> AStar::FindPath(Node* startNode)
 {
+    ClearSetting();        
+
     // 시작 노드 (현재 위치) 를 목적지로 설정
     this->goalNode = startNode;
 
     // 방문 비용 배열 초기화
-    std::vector<std::vector<float>>().swap(visitedGCost);
     visitedGCost.assign(MapManager::Get().GetMapHeight(), std::vector<float>(MapManager::Get().GetMapWidth(), FLT_MAX));
 
     // 탈출구를 열린 리스트에 추가 및 탐색 시작
@@ -109,7 +97,6 @@ std::vector<Node*> AStar::FindPath(Node* startNode)
             // 열린 리스트에 추가
             openList.push(neighborNode);
         }
-
     }
 
 	return std::vector<Node*>();
@@ -121,15 +108,16 @@ std::vector<Node*> AStar::ConstructPath(Node* goalNode)
     std::vector<Node*> path;
 
     // 역추적 하면서 path에 채우기
-    Node* currentNode = goalNode;
+    // goalNode는 생존자의 위치이므로 제외
+    Node* currentNode = goalNode->parentNode;
     while (currentNode)
     {
         path.emplace_back(currentNode);
         currentNode = currentNode->parentNode;
     }
 
-    // 이렇게 얻은 결과는 순서가 거꾸로 되어 있으므로 다시 거꾸로 정렬이 필요함
-    std::reverse(path.begin(), path.end());
+    // 탈출구에서부터 찾은 결과이므로 이미 정렬이 되어 있음
+    //std::reverse(path.begin(), path.end());
     return path;
 }
 
@@ -138,7 +126,7 @@ float AStar::CalculateHeuristic(Node* currentNode, Node* goalNode)
     // 현재 노드에서 목표 노드까지의 비용 계산
     // 유클리드 거리 (Euclidean Distance)
     Vector2 diff = currentNode->position - goalNode->position;
-    return Util::Sqrt(diff.x * diff.x + diff.y * diff.y);
+    return Util::Sqrt(static_cast<float>(diff.x * diff.x + diff.y * diff.y));
 }
 
 bool AStar::IsInRange(const Vector2& curPos)
@@ -156,6 +144,9 @@ bool AStar::IsInRange(const Vector2& curPos)
 
 bool AStar::HasVisited(const Vector2& curPos, float gCost)
 {
+    // gCost를 비교하는 이유
+    // 해당 위치의 휴리스틱 값 (hCost) 는 동일하므로 
+    // 실제 이동 비용인 gCost만 비교하면 됨
     // 방문 배열에 저장된 값보다 크거나 같으면 방문 처리
     if (visitedGCost[curPos.y][curPos.x] <= gCost)
     {
@@ -170,4 +161,25 @@ bool AStar::IsDestination(const Node* const node)
 {
     // 두 노드가 같은지 비교
     return *node == *goalNode;
+}
+
+void AStar::ClearSetting()
+{
+    // 메모리 정리
+    while (!openList.empty())
+    {
+        Node* node = openList.top();
+        openList.pop();
+        SafeDelete(node);
+    }
+
+    for (Node* node : closedList)
+    {
+        SafeDelete(node);
+    }
+    closedList.clear();
+
+    SafeDelete(goalNode);
+
+    std::vector<std::vector<float>>().swap(visitedGCost);
 }

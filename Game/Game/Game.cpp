@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Level/EditLevel.h"
+#include "Level/EscapeLevel.h"
 #include "Manager/MapManager.h"
 #include "Util/Util.h"
 
@@ -15,6 +16,7 @@ Game::Game()
 	mapManager = new MapManager();
 
 	levels.emplace_back(new EditLevel());
+	levels.emplace_back(new EscapeLevel());
 
 	mainLevel = levels[0];
 }
@@ -35,6 +37,16 @@ Game::~Game()
 
 	// 배열 정리
 	levels.clear();
+}
+
+void Game::ToggleMenu(int levelIndex)
+{
+	// 화면 지우기
+	system("cls");
+
+	// 메인 레벨 변경
+	mainLevel = levels[levelIndex];
+	mainLevel->LevelSetting();
 }
 
 Game& Game::Get()

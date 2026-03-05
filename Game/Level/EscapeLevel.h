@@ -1,27 +1,30 @@
 #pragma once
+
 #include "Level/Level.h"
 
 using namespace Wanted;
 
-class EditLevel : public Level
+class EscapeLevel : public Level
 {
 	// RTTI 선언
-	RTTI_DECLARATIONS(EditLevel, Level)
+	RTTI_DECLARATIONS(EscapeLevel, Level)
 
 public:
-	EditLevel();
-	~EditLevel();
+	EscapeLevel();
+	~EscapeLevel();
 
-	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;
+
+	// 레벨이 토글됐을 때 호출할 이벤트 함수
 	virtual void LevelSetting() override;
-	
+
 private:
 	// 맵을 그리는 함수
 	void DrawMap();
 
-	// 설명서를 보여주는(그리는) 함수
-	void DrawInstruction();
+	void Initialize();
+
+	// Todo: 로그 표시 필요
 
 private:
 

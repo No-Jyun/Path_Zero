@@ -1,5 +1,6 @@
 #include "MapManager.h"
 #include "Engine/Engine.h"
+#include "Util/Util.h"
 
 // 정적 변수 초기화
 MapManager* MapManager::instance = nullptr;
@@ -38,10 +39,15 @@ void MapManager::Initialize()
 {
 	std::vector<std::string>().swap(mapData);
 	std::vector<Vector2>().swap(exitPositions);
+	std::vector<Vector2>().swap(playerPositions);
 
 	mapData.assign(mapHeight, std::string(mapWidth, ' '));
 
-	// 랜덤 플레이어 생성
+	// Todo: 랜덤 플레이어 생성
+	int randX = Util::Random(mapWidth / 2 - 10, mapWidth / 2 + 10);
+	int randY = Util::Random(mapHeight / 2 - 10, mapHeight / 2 + 10);
+	mapData[randY][randX] = 'P';
+	playerPositions.emplace_back(Vector2(randX, randY));
 
 	// 맵 경계 설정
 	for (int j = 0; j < mapHeight; j++)
