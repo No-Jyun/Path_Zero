@@ -29,9 +29,15 @@ void MapManager::SetNewGame()
 	Initialize();
 }
 
+void MapManager::StartGame()
+{
+	FindExits();
+}
+
 void MapManager::Initialize()
 {
 	std::vector<std::string>().swap(mapData);
+	std::vector<Vector2>().swap(exitPositions);
 
 	mapData.assign(mapHeight, std::string(mapWidth, ' '));
 
@@ -48,6 +54,20 @@ void MapManager::Initialize()
 	{
 		mapData[0][i] = '#';
 		mapData[mapHeight - 1][i] = '#';
+	}
+}
+
+void MapManager::FindExits()
+{
+	for (int i = 0; i < mapHeight; i++)
+	{
+		for (int j = 0; j < mapWidth; j++)
+		{
+			if (mapData[i][j] == 'X')
+			{
+				exitPositions.emplace_back(Vector2(j, i));
+			}
+		}
 	}
 }
 

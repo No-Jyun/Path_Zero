@@ -20,11 +20,15 @@ public:
 	// 게임을 새롭게 시작할 때 사용하는 함수
 	void SetNewGame();
 
+	// 맵 편집이 끝나고 게임을 시작하는 함수
+	void StartGame();
+
 	// Getter
 	inline const std::vector<std::string>& GetMapData() { return mapData; }
 	inline const int GetMapWidth() { return mapWidth; }
 	inline const int GetMapHeight() { return mapHeight; }
 	inline const char GetMapPositionData(const Vector2& position) { return mapData[position.x][position.y]; }
+	inline const std::vector<Vector2> GetExitPositions() { return exitPositions; }
 
 	// 싱글톤 접근 함수
 	static MapManager& Get();
@@ -33,9 +37,15 @@ private:
 	// 초기 세팅 함수
 	void Initialize();
 
+	// 탈출구를 찾아 저장해놓는 함수
+	void FindExits();
+
 private:
 	// 맵을 저장할 변수
 	std::vector<std::string> mapData;
+
+	// 탈출구를 저장할 변수
+	std::vector<Vector2> exitPositions;
 
 	// 맵 크기 변수
 	int mapWidth = 0;
