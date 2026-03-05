@@ -3,6 +3,7 @@
 #include "Algorithm/AStar.h"
 #include "Algorithm/Node.h"
 #include "Render/Renderer.h"
+#include "Manager/MapManager.h"
 
 Survivor::Survivor(const Vector2& position, Color color)
 	: super("P", position, color)
@@ -79,13 +80,21 @@ void Survivor::Move()
 
 	timer.Reset();
 
-	// 1칸 이동할 노드
-	Node* nextNode = path[0];
+	// 다음으로 이동할 노드에서 위치 가져오기
+	Vector2 movedPosition = path[0]->GetPosition();
 
 	// 경로에서 삭제
 	path.erase(path.begin());
 
-	position = nextNode->GetPosition();
+	// 맵에서도 이동
+	// 이전 좌표는 빈 공간으로
+	MapManager::Get().SetMapTile(position, ' ');
+
+	// 생존자 이동
+	position = movedPosition;
+	
+	// 이동한 좌표를 플레이어 표시
+	MapManager::Get().SetMapTile(position, 'P');
 }
 
 Color Survivor::GetPathColor()

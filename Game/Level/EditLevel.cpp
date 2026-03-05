@@ -41,9 +41,10 @@ void EditLevel::Tick(float deltaTime)
 {
 	super::Tick(deltaTime);
 
-	// Todo: 레벨 토글 함수 작성
-	if (Input::Get().GetKeyDown('T'))
+	// 엔터 입력시 맵 토글
+	if (Input::Get().GetKeyDown(VK_RETURN))
 	{
+		// Todo: 맵 토글 전에 맵 검사 필요
 		Game::Get().ToggleMenu(1);
 	}
 }

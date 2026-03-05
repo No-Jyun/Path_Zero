@@ -36,10 +36,7 @@ protected:
 
 	bool isFirstClicked = true;
 
-	// 콘솔 화면에 출력할 때 사용하는 위치 배열
+	// 마우스 클릭/드래그로 선택한 위치 배열
 	std::vector<Vector2> selectedPositionInConsole;
-
-	// 맵 타일을 변경할 때 사용하는 위치 배열
-	std::vector<Vector2> selectedPositionInMap;
 };
 

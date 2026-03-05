@@ -71,14 +71,12 @@ void MouseBase::SelectPositionClear()
 	lastSelectedPosition = Vector2::Zero;
 
 	selectedPositionInConsole.clear();
-	selectedPositionInMap.clear();
 }
 
 void MouseBase::DragProcess()
 {
 	// 현재 배열 비우기
 	selectedPositionInConsole.clear();
-	selectedPositionInMap.clear();
 
 	// x(Row), y(Col)의 시작과 끝을 계산 (어느 방향으로 드래그해도 대응 가능하게)
 	int startX = min(firstSelectedPosition.x, lastSelectedPosition.x);
@@ -102,7 +100,6 @@ void MouseBase::DragProcess()
 
 			//선택 영역 저장
 			selectedPositionInConsole.emplace_back(Vector2(x, y));
-			selectedPositionInMap.emplace_back(Vector2(y, x));
 		}
 	}
 }

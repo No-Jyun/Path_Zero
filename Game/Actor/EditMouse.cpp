@@ -57,7 +57,7 @@ void EditMouse::Tick(float deltaTime)
 
 void EditMouse::MakeWall()
 {
-	for (const Vector2& selPos : selectedPositionInMap)
+	for (const Vector2& selPos : selectedPositionInConsole)
 	{
 		// Todo: 현재 변경하는 타일 확인 필요
 		MapManager::Get().SetMapTile(selPos, '#');
@@ -68,7 +68,7 @@ void EditMouse::MakeWall()
 
 void EditMouse::MakeFire()
 {
-	for (const Vector2& selPos : selectedPositionInMap)
+	for (const Vector2& selPos : selectedPositionInConsole)
 	{
 		// Todo: 현재 변경하는 타일 확인 필요
 		// Todo: 불 타일 개수 확인 필요
@@ -80,7 +80,7 @@ void EditMouse::MakeFire()
 
 void EditMouse::MakeExit()
 {
-	for (const Vector2& selPos : selectedPositionInMap)
+	for (const Vector2& selPos : selectedPositionInConsole)
 	{
 		// Todo: 현재 변경하는 타일 확인 필요
 		// Todo: 탈출구 타일 개수 확인 필요
@@ -92,7 +92,7 @@ void EditMouse::MakeExit()
 
 void EditMouse::MakeEmpty()
 {
-	for (const Vector2& selPos : selectedPositionInMap)
+	for (const Vector2& selPos : selectedPositionInConsole)
 	{
 		// Todo: 현재 변경하는 타일 확인 필요
 		MapManager::Get().SetMapTile(selPos, ' ');

@@ -22,7 +22,7 @@ MapManager::~MapManager()
 void MapManager::SetMapTile(const Vector2& position, const char tile)
 {
 	// 마우스로 선택된 영역은 map 영역을 벗어나지 않으므로 생략
-	mapData[position.x][position.y] = tile;
+	mapData[position.y][position.x] = tile;
 }
 
 void MapManager::SetNewGame()
@@ -32,22 +32,43 @@ void MapManager::SetNewGame()
 
 void MapManager::StartGame()
 {
-	FindExits();
+	// 탈출구 저장
+	FindExits();	
 }
 
 void MapManager::Initialize()
 {
 	std::vector<std::string>().swap(mapData);
 	std::vector<Vector2>().swap(exitPositions);
-	std::vector<Vector2>().swap(playerPositions);
+	std::vector<Vector2>().swap(survivorPositions);
 
 	mapData.assign(mapHeight, std::string(mapWidth, ' '));
 
-	// Todo: 랜덤 플레이어 생성
-	int randX = Util::Random(mapWidth / 2 - 10, mapWidth / 2 + 10);
-	int randY = Util::Random(mapHeight / 2 - 10, mapHeight / 2 + 10);
-	mapData[randY][randX] = 'P';
-	playerPositions.emplace_back(Vector2(randX, randY));
+	// 랜덤 생존자 6명 생성
+	int count = 1;
+	while (count <= 6)
+	{
+		count++;
+
+		// 맵 중앙 랜덤 좌표 생성
+		int randX = Util::Random(mapWidth / 2 - 8, mapWidth / 2 + 8);
+		int randY = Util::Random(mapHeight / 2 - 3, mapHeight / 2 + 3);
+
+		// 이미 생성된 플레이어 좌표 검사
+		for (const Vector2& pos : survivorPositions)
+		{
+			// 좌표가 같으면 다시 랜덤좌표 스킵
+			if (pos.x == randX && pos.y == randY)
+			{
+				count--;
+				continue;
+			}
+		}
+
+		mapData[randY][randX] = 'P';
+		survivorPositions.emplace_back(Vector2(randX, randY));
+
+	}
 
 	// 맵 경계 설정
 	for (int j = 0; j < mapHeight; j++)

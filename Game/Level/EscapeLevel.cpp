@@ -47,7 +47,7 @@ void EscapeLevel::Initialize()
 	MapManager::Get().StartGame();
 
 	// 액터 생성
-	auto survivorPos = MapManager::Get().GetPlayerPositions();
+	auto survivorPos = MapManager::Get().GetSurvivorPositions();
 	int survivorIndex = 0;
 	for (; survivorIndex < static_cast<int>(survivorPos.size()); survivorIndex++)
 	{
