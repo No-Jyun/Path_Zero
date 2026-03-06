@@ -1,5 +1,6 @@
 #include "EditLevel.h"
 #include "Manager/MapManager.h"
+#include "Manager/LogManager.h"
 #include "Engine/Engine.h"
 #include "Render/Renderer.h"
 #include "Actor/EditMouse.h"
@@ -23,6 +24,12 @@ const char* instructionString[] =
 	"불과 탈출구를 생성하지 않을 시 무작위로 생성됩니다.",
 	"탈출구는 반드시 맵 경계에 생성해야 합니다.",
 	"현재 상황에서 탈출 경로가 없는 경우 맵을 다시 제작해야 합니다.",
+	" ",
+	"현재 상황에서 탈출 경로가 없는 경우 맵을 다시 제작해야 합니다.",
+	" ",
+	" ",
+	"로그",
+	" ",
 };
 
 EditLevel::EditLevel()
@@ -30,6 +37,23 @@ EditLevel::EditLevel()
 	MapManager::Get().SetNewGame();
 
 	AddNewActor(new EditMouse(Vector2(0, Engine::Get().Height() - 1)));
+
+	// 로그 위치 설정
+	int offsetX = MapManager::Get().GetMapWidth() + 5;
+	int offsetY = _countof(instructionString);
+	
+	// Todo: 레벨 전환 생각해야함
+	// 로그 매니저에게 전달할 배열 생성
+	std::vector<LogActor*> logVector;
+	for (int i = 0; i < LogManager::Get().GetLogCount(); i++)
+	{
+		LogActor* logActor = new LogActor(Vector2(offsetX, offsetY + i));
+		AddNewActor(logActor);
+		logVector.emplace_back(logActor);
+	}
+
+	// 로그 매니저 사용 준비
+	LogManager::Get().Initialize(logVector);
 }
 
 EditLevel::~EditLevel()
@@ -76,6 +100,14 @@ void EditLevel::DrawInstruction()
 		Vector2 drawPosition = Vector2(offsetX, 1);
 		drawPosition.y += i;
 
-		Renderer::Get().Submit(instructionString[i], drawPosition);
+		// 로그 안내문 색상 변경
+		if (i == length - 2)
+		{
+			Renderer::Get().Submit(instructionString[i], drawPosition, Color::LightRed);
+		}
+		else
+		{
+			Renderer::Get().Submit(instructionString[i], drawPosition);
+		}
 	}
 }

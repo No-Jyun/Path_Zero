@@ -100,6 +100,7 @@
     <ClCompile Include="Actor\MouseBase.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Level\EditLevel.cpp" />
+    <ClCompile Include="Manager\LogManager.cpp" />
     <ClCompile Include="Manager\MapManager.cpp" />
     <ClCompile Include="Util\Direction.cpp" />
     <ClCompile Include="Util\Timer.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Level\EditLevel.h" />
     <ClInclude Include="Level\EscapeLevel.h" />
+    <ClInclude Include="Manager\LogManager.h" />
     <ClInclude Include="Manager\MapManager.h" />
     <ClInclude Include="Util\Direction.h" />
     <ClInclude Include="Util\Timer.h" />

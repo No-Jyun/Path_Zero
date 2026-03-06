@@ -2,6 +2,7 @@
 #include "Level/EditLevel.h"
 #include "Level/EscapeLevel.h"
 #include "Manager/MapManager.h"
+#include "Manager/LogManager.h"
 #include "Util/Util.h"
 
 #include <Windows.h>
@@ -15,6 +16,8 @@ Game::Game()
 
 	mapManager = new MapManager();
 
+	logManager = new LogManager();
+
 	levels.emplace_back(new EditLevel());
 	levels.emplace_back(new EscapeLevel());
 
@@ -27,6 +30,7 @@ Game::~Game()
 	mainLevel = nullptr;
 
 	SafeDelete(mapManager);
+	SafeDelete(logManager);
 
 	// 모든 레벨 삭제
 	for (Level*& level : levels)

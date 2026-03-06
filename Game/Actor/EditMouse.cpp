@@ -1,6 +1,7 @@
 #include "EditMouse.h"
 #include "Core/Input.h"
 #include "Manager/MapManager.h"
+#include "Manager/LogManager.h"
 #include "Game/Game.h"
 #include "Algorithm/AStar.h"
 #include "Algorithm/BFS.h"
@@ -189,6 +190,8 @@ bool EditMouse::IsExitable()
 		if (exitablePosition.empty())
 		{
 			// Todo: 로그
+			LogManager::Get().PrintLog("맵을 다시 편집해주세요.");
+			LogManager::Get().PrintLog("탈출할 수 있는 경로가 없습니다.");
 			return false;
 		}
 

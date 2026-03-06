@@ -24,6 +24,9 @@ private:
 	// 맵 매니저 객체
 	class MapManager* mapManager = nullptr;
 
+	// 로그 매니저 객체
+	class LogManager* logManager = nullptr;
+
 	// 싱글톤 구현을 위한 정적 변수
 	static Game* instance;
 };
