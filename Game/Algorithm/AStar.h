@@ -15,6 +15,9 @@ public:
 	// startNode : 시작 지점
 	std::vector<Node*> FindPath(Node* startNode);
 
+	// 재탐색을 위해 클리어 함수
+	void ClearSetting();
+
 private:
 	// 탐색을 완료한 후에 최적 경로를 반환하는 함수
 	// 부모 링크를 따라가면서 역추적
@@ -32,9 +35,6 @@ private:
 
 	// 탐색하려는 노드가 목표 노드인지 확인하는 함수
 	bool IsDestination(const Node* const node);
-
-	// 재탐색을 위해 클리어 함수
-	void ClearSetting();
 
 private:
 	// 열린 리스트 (우선순위 큐를 사용하여 fCost가 가장 낮은 노드가 Top에 오도록 정렬됨)

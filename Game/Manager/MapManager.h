@@ -49,6 +49,9 @@ private:
 	// 초기 세팅 함수
 	void Initialize();
 
+	// 맵 편집 이후 부족한 불 / 탈출구를 생성하는 함수
+	void CheckFireAndExit();
+
 private:
 	// 맵을 저장할 변수
 	std::vector<std::string> mapData;
@@ -66,6 +69,8 @@ private:
 	int mapWidth = 0;
 	int mapHeight = 0;
 
+	// Todo: 불 타일, 탈출구 타일 개수 조정 필요
+	
 	// 맵에 배치될 수 있는 최대 탈출구 개수
 	const int maxExitCount = 3;
 	// 맵에 배치될 수 있는 최대 불 개수

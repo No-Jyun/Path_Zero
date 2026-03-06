@@ -2,6 +2,7 @@
 #include "Core/Input.h"
 #include "Manager/MapManager.h"
 #include "Game/Game.h"
+#include "Algorithm/AStar.h"
 
 EditMouse::EditMouse(const Vector2& position)
 	: super(" ", position)
@@ -45,7 +46,14 @@ void EditMouse::Tick(float deltaTime)
 	// 엔터 입력시 맵 토글
 	if (Input::Get().GetKeyDown(VK_RETURN))
 	{
-		// Todo: 맵 토글 전에 맵 검사 필요
+		// Todo: 로그 표시
+		// 맵 토글 전에 맵 검사
+		if (!IsExitable())
+		{
+			// 한 명이라도 탈출 불가시 다시 맵 편집
+			return;
+		}
+
 		Game::Get().ToggleMenu(1);
 	}
 
@@ -79,7 +87,7 @@ void EditMouse::Tick(float deltaTime)
 void EditMouse::MakeTile(const char tile)
 {
 	// 이번에 실제로 바꾼 타일 수
-	int switchedCount = 0; 
+	int switchedCount = 0;
 
 	// 현재 존재하는 불/탈출구 개수
 	int existedSize = 0;
@@ -138,14 +146,58 @@ bool EditMouse::IsEditable(const Vector2& position, const char tile)
 		return false;
 	}
 
-	// 예외 처리 2 : 빈 공간으로 변경시 맵 경계라면 무시
-	if (tile == ' ' &&
-		position.x == 0 || position.x == MapManager::Get().GetMapWidth() - 1 ||
-		position.y == 0 || position.y == MapManager::Get().GetMapHeight() - 1)
+	// 빈 공간으로 변경시 맵 경계라면 무시
+	if (tile == ' ')
 	{
-		return false;
+		if (position.x == 0 || position.x == MapManager::Get().GetMapWidth() - 1 ||
+			position.y == 0 || position.y == MapManager::Get().GetMapHeight() - 1)
+		{
+			return false;
+		}
+	}
+
+	// 탈출구는 맵 경계에만 생성 가능
+	if (tile == 'X')
+	{
+		if (position.x == 0 || position.x == MapManager::Get().GetMapWidth() - 1 ||
+			position.y == 0 || position.y == MapManager::Get().GetMapHeight() - 1)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	// 그외는 변경 가능
+	return true;
+}
+
+bool EditMouse::IsExitable()
+{
+	// 경로 탐색을 위한 AStar 객체 생성
+	AStar astar;
+
+	// 모든 플레이어에 대해 탈출 경로가 있는지 확인
+	for (const Vector2& position : MapManager::Get().GetSurvivorPositions())
+	{
+		// 노드 생성
+		Node* survivorNode = new Node(position);
+
+		// 경로 탐색
+		auto path = astar.FindPath(survivorNode);
+
+		// 경로가 없을 경우 탈출불가
+		if (path.empty())
+		{
+			return false;
+		}
+
+		// 재탐색을 위해 초기화
+		astar.ClearSetting();
+	}
+
+	// 모두 탈출경로가 있다면 true 반환
 	return true;
 }

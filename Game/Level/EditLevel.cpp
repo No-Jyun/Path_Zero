@@ -23,7 +23,6 @@ const char* instructionString[] =
 	"탈출구는 반드시 맵 경계에 생성해야 합니다.",
 	"현재 상황에서 탈출 경로가 없는 경우 맵을 다시 제작해야 합니다.",
 };
-// Todo: 불 타일, 탈출구 타일 개수 조정 필요
 
 EditLevel::EditLevel()
 {

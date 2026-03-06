@@ -5,9 +5,13 @@ using namespace Wanted;
 
 struct Direction
 {
-	static const int directionLength = 8;
+	static const int direction8Length = 8;
 
-	static const Vector2 eightDirection[directionLength];
+	static const Vector2 eightDirection[direction8Length];
 
-	static const float directionCost[directionLength];
+	static const int direction4Length = 4;
+
+	static const Vector2 fourDirection[direction4Length];
+
+	static const float directionCost[direction8Length];
 };

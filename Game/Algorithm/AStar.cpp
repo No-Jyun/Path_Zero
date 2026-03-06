@@ -35,7 +35,7 @@ std::vector<Node*> AStar::FindPath(Node* startNode)
         visitedGCost[exit.y][exit.x] = 0.0f;
     }
 
-    int directionLength = Direction::directionLength;
+    int directionLength = Direction::direction8Length;
 
     // 목적지에 도달 못했고, 탐색 가능한 위치가 있으면 계속 진행
     while (!openList.empty())

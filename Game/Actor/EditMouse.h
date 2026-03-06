@@ -20,6 +20,9 @@ private:
 
 	bool IsEditable(const Vector2& position, const char tile);
 
+	// 맵 편집 종료 전에 생존자가 탈출할 수 있는지 확인하는 함수
+	bool IsExitable();
+
 private:
 
 
