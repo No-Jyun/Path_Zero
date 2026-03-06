@@ -21,7 +21,7 @@ MapManager::~MapManager()
 
 void MapManager::SetMapTile(const Vector2& position, const char tile)
 {
-	// 마우스로 선택된 영역은 map 영역을 벗어나지 않으므로 생략
+	// 마우스로 선택된 영역은 map 영역을 벗어나지 않으므로 예외처리 생략
 	mapData[position.y][position.x] = tile;
 }
 
@@ -33,7 +33,7 @@ void MapManager::SetNewGame()
 void MapManager::StartGame()
 {
 	// 탈출구 저장
-	FindExits();	
+	FindImportantTiles();	
 }
 
 void MapManager::Initialize()
@@ -65,7 +65,7 @@ void MapManager::Initialize()
 			}
 		}
 
-		mapData[randY][randX] = 'P';
+		mapData[randY][randX] = 'S';
 		survivorPositions.emplace_back(Vector2(randX, randY));
 
 	}
@@ -84,8 +84,11 @@ void MapManager::Initialize()
 	}
 }
 
-void MapManager::FindExits()
+void MapManager::FindImportantTiles()
 {
+	std::vector<Vector2>().swap(exitPositions);
+	std::vector<Vector2>().swap(firePositions);
+
 	for (int i = 0; i < mapHeight; i++)
 	{
 		for (int j = 0; j < mapWidth; j++)
@@ -93,6 +96,10 @@ void MapManager::FindExits()
 			if (mapData[i][j] == 'X')
 			{
 				exitPositions.emplace_back(Vector2(j, i));
+			}
+			else if (mapData[i][j] == 'F')
+			{
+				firePositions.emplace_back(Vector2(j, i));
 			}
 		}
 	}

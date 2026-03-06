@@ -12,7 +12,6 @@ public:
 	EditLevel();
 	~EditLevel();
 
-	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;
 	virtual void LevelSetting() override;
 	

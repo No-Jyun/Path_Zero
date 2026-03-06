@@ -16,10 +16,9 @@ public:
 	virtual void Tick(float deltaTime) override;
 
 private:
-	void MakeWall();
-	void MakeFire();
-	void MakeExit();
-	void MakeEmpty();
+	void MakeTile(const char tile);
+
+	bool IsEditable(const Vector2& position, const char tile);
 
 private:
 

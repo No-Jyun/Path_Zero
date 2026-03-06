@@ -3,8 +3,6 @@
 #include "Engine/Engine.h"
 #include "Render/Renderer.h"
 #include "Actor/EditMouse.h"
-#include "Core/Input.h"
-#include "Game/Game.h"
 
 const char* instructionString[] =
 {
@@ -18,6 +16,7 @@ const char* instructionString[] =
 	"D키 : 선택한 영역을 빈 공간으로 변경합니다.",
 	"R키 : 선택 영역이 초기화 됩니다.",
 	"Q키 : 프로그램을 종료합니다.",
+	"Enter키 : 맵 편집을 종료하고 시뮬레이션을 시작합니다.",
 	" ",
 	"주의점",
 	"불과 탈출구를 생성하지 않을 시 무작위로 생성됩니다.",
@@ -37,18 +36,6 @@ EditLevel::~EditLevel()
 {
 }
 
-void EditLevel::Tick(float deltaTime)
-{
-	super::Tick(deltaTime);
-
-	// 엔터 입력시 맵 토글
-	if (Input::Get().GetKeyDown(VK_RETURN))
-	{
-		// Todo: 맵 토글 전에 맵 검사 필요
-		Game::Get().ToggleMenu(1);
-	}
-}
-
 void EditLevel::Draw()
 {
 	super::Draw();
@@ -60,8 +47,6 @@ void EditLevel::Draw()
 void EditLevel::LevelSetting()
 {
 	MapManager::Get().SetNewGame();
-
-	//AddNewActor(new EditMouse(Vector2(0, Engine::Get().Height() - 1)));
 }
 
 void EditLevel::DrawMap()

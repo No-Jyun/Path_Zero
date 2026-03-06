@@ -1,6 +1,7 @@
 #include "EditMouse.h"
 #include "Core/Input.h"
 #include "Manager/MapManager.h"
+#include "Game/Game.h"
 
 EditMouse::EditMouse(const Vector2& position)
 	: super(" ", position)
@@ -14,39 +15,59 @@ EditMouse::~EditMouse()
 void EditMouse::Tick(float deltaTime)
 {
 	super::Tick(deltaTime);
+
 	// 키보드 입력 처리
 	/*
+	"조작법",
+	"클릭/드래그를 통해 변경할 곳을 선택합니다.",
+	"특정 키를 입력하면 선택한 영역을 해당 타일로 변경합니다.",
+	" ",
 	"W키 : 생존자가 넘어갈 수 없는 벽을 생성합니다.",
 	"F키 : 점점 넓어지는 불을 생성합니다 (최대 5개)",
 	"E키 : 생존자가 탈출할 수 있는 탈출구를 생성합니다. (최대 3개)",
 	"D키 : 선택한 영역을 빈 공간으로 변경합니다.",
 	"R키 : 선택 영역이 초기화 됩니다.",
 	"Q키 : 프로그램을 종료합니다.",
+	"Enter키 : 맵 편집을 종료하고 시뮬레이션을 시작합니다.",
+	" ",
+	"주의점",
+	"불과 탈출구를 생성하지 않을 시 무작위로 생성됩니다.",
+	"탈출구는 반드시 맵 경계에 생성해야 합니다.",
+	"현재 상황에서 탈출 경로가 없는 경우 맵을 다시 제작해야 합니다.",
 	*/
 	// 게임 종료
 	if (Input::Get().GetKeyDown('Q'))
 	{
 		QuitGame();
+		return;
 	}
+
+	// 엔터 입력시 맵 토글
+	if (Input::Get().GetKeyDown(VK_RETURN))
+	{
+		// Todo: 맵 토글 전에 맵 검사 필요
+		Game::Get().ToggleMenu(1);
+	}
+
 	// 선택 영역 벽 생성
 	if (Input::Get().GetKeyDown('W'))
 	{
-		MakeWall();
+		MakeTile('#');
 	}
 	// 선택 영역 불 생성
 	if (Input::Get().GetKeyDown('F'))
 	{
-		MakeFire();
+		MakeTile('F');
 	}
 	// 선택 영역 탈출구 생성
 	if (Input::Get().GetKeyDown('E'))
 	{
-		MakeExit();
+		MakeTile('X');
 	}
 	// 선택 영역 빈 공간으로 초기화
 	if (Input::Get().GetKeyDown('D'))
 	{
-		MakeEmpty();
+		MakeTile(' ');
 	}
 	// 선택 영역 초기화
 	if (Input::Get().GetKeyDown('R'))
@@ -55,48 +76,76 @@ void EditMouse::Tick(float deltaTime)
 	}
 }
 
-void EditMouse::MakeWall()
+void EditMouse::MakeTile(const char tile)
 {
-	for (const Vector2& selPos : selectedPositionInConsole)
+	// 이번에 실제로 바꾼 타일 수
+	int switchedCount = 0; 
+
+	// 현재 존재하는 불/탈출구 개수
+	int existedSize = 0;
+
+	// 최대 불/탈출구 개수
+	int maxSize = INT_MAX;
+
+	if (tile == 'F')
 	{
-		// Todo: 현재 변경하는 타일 확인 필요
-		MapManager::Get().SetMapTile(selPos, '#');
+		existedSize = MapManager::Get().GetFireCount();
+		maxSize = MapManager::Get().GetMaxFireCount();
+	}
+	else if (tile == 'X')
+	{
+		existedSize = MapManager::Get().GetExitCount();
+		maxSize = MapManager::Get().GetMaxExitCount();
 	}
 
+	for (const Vector2& selPos : selectedPositionInConsole)
+	{
+		// 불이나 탈출구라면 -> 개수 제한 확인 (현재 개수 + 바뀐 개수 >= 최대 크기)
+		if ((tile == 'F' || tile == 'X') && (existedSize + switchedCount >= maxSize))
+			break;
+
+		if (!IsEditable(selPos, tile))
+		{
+			continue;
+		}
+
+		// 타일 변경
+		MapManager::Get().SetMapTile(selPos, tile);
+		switchedCount++;
+	}
+
+	// 불 타일 / 탈출구 타일 업데이트
+	MapManager::Get().FindImportantTiles();
+
+	// 선택한 영역 초기화
 	SelectPositionClear();
 }
 
-void EditMouse::MakeFire()
+bool EditMouse::IsEditable(const Vector2& position, const char tile)
 {
-	for (const Vector2& selPos : selectedPositionInConsole)
+	// 변경 이전 타일
+	char oldTile = MapManager::Get().GetMapPositionData(position);
+
+	// 생존자라면 무시
+	if (oldTile == 'S')
 	{
-		// Todo: 현재 변경하는 타일 확인 필요
-		// Todo: 불 타일 개수 확인 필요
-		MapManager::Get().SetMapTile(selPos, 'F');
+		return false;
 	}
 
-	SelectPositionClear();
-}
-
-void EditMouse::MakeExit()
-{
-	for (const Vector2& selPos : selectedPositionInConsole)
+	// 이미 같은 타일이면 무시
+	if (oldTile == tile)
 	{
-		// Todo: 현재 변경하는 타일 확인 필요
-		// Todo: 탈출구 타일 개수 확인 필요
-		MapManager::Get().SetMapTile(selPos, 'X');
+		return false;
 	}
 
-	SelectPositionClear();
-}
-
-void EditMouse::MakeEmpty()
-{
-	for (const Vector2& selPos : selectedPositionInConsole)
+	// 예외 처리 2 : 빈 공간으로 변경시 맵 경계라면 무시
+	if (tile == ' ' &&
+		position.x == 0 || position.x == MapManager::Get().GetMapWidth() - 1 ||
+		position.y == 0 || position.y == MapManager::Get().GetMapHeight() - 1)
 	{
-		// Todo: 현재 변경하는 타일 확인 필요
-		MapManager::Get().SetMapTile(selPos, ' ');
+		return false;
 	}
 
-	SelectPositionClear();
+	// 그외는 변경 가능
+	return true;
 }

@@ -6,7 +6,7 @@
 #include "Manager/MapManager.h"
 
 Survivor::Survivor(const Vector2& position, Color color)
-	: super("P", position, color)
+	: super("S", position, color)
 {
 	astar = new AStar();
 	sortingOrder = 5;
