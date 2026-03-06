@@ -3,6 +3,8 @@
 #include "Manager/MapManager.h"
 #include "Game/Game.h"
 #include "Algorithm/AStar.h"
+#include "Algorithm/BFS.h"
+#include "Util/Util.h"
 
 EditMouse::EditMouse(const Vector2& position)
 	: super(" ", position)
@@ -176,6 +178,28 @@ bool EditMouse::IsEditable(const Vector2& position, const char tile)
 
 bool EditMouse::IsExitable()
 {
+	// 탈출구를 만들지 않은 경우
+	if (MapManager::Get().GetExitCount() == 0)
+	{
+		// BFS 알고리즘을 통해 가능한 맵경계를 찾자!
+		BFS bfs;
+		auto exitablePosition = bfs.findExitableTile();
+
+		// 탈출할 수 있는 경로가 없는 경우 반환 및 로그
+		if (exitablePosition.empty())
+		{
+			// Todo: 로그
+			return false;
+		}
+
+		// 가능한 탈출경로 존재시 랜덤으로 하나 생성
+		int length = static_cast<int>(exitablePosition.size());
+		int exitIndex = Util::Random(0, length - 1);
+
+		MapManager::Get().SetMapTile(exitablePosition[exitIndex], 'X');
+		return true;
+	}	
+
 	// 경로 탐색을 위한 AStar 객체 생성
 	AStar astar;
 
@@ -191,6 +215,7 @@ bool EditMouse::IsExitable()
 		// 경로가 없을 경우 탈출불가
 		if (path.empty())
 		{
+			// Todo: 로그 표시
 			return false;
 		}
 

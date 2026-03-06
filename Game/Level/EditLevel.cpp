@@ -3,6 +3,7 @@
 #include "Engine/Engine.h"
 #include "Render/Renderer.h"
 #include "Actor/EditMouse.h"
+#include "Actor/LogActor.h"
 
 const char* instructionString[] =
 {
