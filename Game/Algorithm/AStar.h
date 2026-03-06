@@ -27,8 +27,17 @@ private:
 	float CalculateHeuristic(Node* currentNode, Node* goalNode);
 
 	// 탐색하려는 위치 (노드) 가 그리드 범위 안에 있는지 확인
-	// 유효성 검증
+	// 유효성 검증 함수
 	bool IsInRange(const Vector2& curPos);
+
+	// 대각선 방향 검증 함수
+	bool IsMovableDiagnal(const Vector2& curPos, const Vector2& direction);
+
+	// 벽 / 불 타일 막는 함수
+	bool IsMovableTile(const Vector2& position);
+
+	// 다른 생존자가 있는 칸인지 확인하는 함수
+	bool IsOtherSurvivorTile(const Vector2& position);
 
 	// 이미 방문했는지 확인하는 함수
 	bool HasVisited(const Vector2& curPos, float gCost);

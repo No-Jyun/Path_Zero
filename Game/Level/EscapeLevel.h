@@ -24,8 +24,6 @@ private:
 
 	void Initialize();
 
-	// Todo: 로그 표시 필요
-
 private:
 
 };

@@ -26,6 +26,9 @@ public:
 	// 탈출구 / 불 위치를 찾아 저장하는 함수
 	void FindImportantTiles();
 
+	// 탈출구가 가능한 위치인지 알려주는 함수
+	bool IsExitablePosition(const Vector2& position);
+
 	// Getter
 	inline const std::vector<std::string>& GetMapData() { return mapData; }
 	inline const int GetMapWidth() { return mapWidth; }

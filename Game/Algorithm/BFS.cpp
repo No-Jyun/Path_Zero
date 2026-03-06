@@ -4,8 +4,6 @@
 
 #include <queue>
 
-using namespace Wanted;
-
 BFS::BFS()
 {
     LoadMapData();
@@ -43,24 +41,30 @@ std::vector<Vector2> BFS::findExitableTile()
             // 생존자는 항상 맵의 내부에 존재하고, 우리는 맵 경계에 있는
             // 탈출구의 경로를 찾으므로 맵을 벗어나는 예외처리 생략함
 
-            // 다음 위치가 맵 경계라면
-            if (nextPos.x == 0 || nextPos.x == MapManager::Get().GetMapWidth() - 1 ||
-                nextPos.y == 0 || nextPos.y == MapManager::Get().GetMapHeight() - 1)
-            {
-                // 가능 후보에 전달
-                canExitPosition.emplace_back(nextPos);
-                continue;
-            }
-
             // 다음 위치가 방문한 위치라면 생략
             if (mapVisited[nextPos.y][nextPos.x])
             {
                 continue;
             }
 
-            // Todo: 대각선 로직 검증 필요
+            // 다음 위치가 탈출구를 만들 수 있는 위치라면
+            if (MapManager::Get().IsExitablePosition(nextPos))
+            {
+                // 가능 후보에 전달
+                canExitPosition.emplace_back(nextPos);
+                mapVisited[nextPos.y][nextPos.x] = true;
+
+                continue;
+            }
+
+            // 대각선 로직 검증 필요
+            if (dir % 2 == 1 && !IsMovableDiagnal(nowPos, Direction::eightDirection[dir]))
+            {
+                continue;
+            }
 
             // 다음 위치가 빈 공간인 경우만 이동 가능
+            // 맵 편집 후 탈출경로가 존재하는지에 대한 정적 BFS 이므로 빈칸만 확인
             if (MapManager::Get().GetMapPositionData(nextPos) == ' ')
             {
                 mapVisited[nextPos.y][nextPos.x] = true;
@@ -70,6 +74,31 @@ std::vector<Vector2> BFS::findExitableTile()
     }
     
     return canExitPosition;
+}
+
+bool BFS::IsMovableDiagnal(const Vector2& curPos, const Vector2& direction)
+{
+    // x 방향 검증
+    Vector2 chkPos = curPos;
+    chkPos.x += direction.x;
+
+    // 해당 타일이 빈 칸이 아니면 이동 불가
+    if (MapManager::Get().GetMapPositionData(chkPos) != ' ')
+    {
+        return false;
+    }
+
+    // y 방향 검증
+    chkPos = curPos;
+    chkPos.y += direction.y;
+
+    // 해당 타일이 빈 칸이 아니면 이동 불가
+    if (MapManager::Get().GetMapPositionData(chkPos) != ' ')
+    {
+        return false;
+    }
+
+    return true;
 }
 
 void BFS::LoadMapData()

@@ -49,11 +49,9 @@ void EditMouse::Tick(float deltaTime)
 	// 엔터 입력시 맵 토글
 	if (Input::Get().GetKeyDown(VK_RETURN))
 	{
-		// Todo: 로그 표시
 		// 맵 토글 전에 맵 검사
 		if (!IsExitable())
 		{
-			// 한 명이라도 탈출 불가시 다시 맵 편집
 			return;
 		}
 
@@ -162,8 +160,7 @@ bool EditMouse::IsEditable(const Vector2& position, const char tile)
 	// 탈출구는 맵 경계에만 생성 가능
 	if (tile == 'X')
 	{
-		if (position.x == 0 || position.x == MapManager::Get().GetMapWidth() - 1 ||
-			position.y == 0 || position.y == MapManager::Get().GetMapHeight() - 1)
+		if (MapManager::Get().IsExitablePosition(position))
 		{
 			return true;
 		}
@@ -189,7 +186,8 @@ bool EditMouse::IsExitable()
 		// 탈출할 수 있는 경로가 없는 경우 반환 및 로그
 		if (exitablePosition.empty())
 		{
-			// Todo: 로그
+			// 로그 출력
+			// 로그가 스택 형식으로 출력되므로 이후에 나올 로그를 먼저 작성
 			LogManager::Get().PrintLog("맵을 다시 편집해주세요.");
 			LogManager::Get().PrintLog("탈출할 수 있는 경로가 없습니다.");
 			return false;
@@ -200,6 +198,8 @@ bool EditMouse::IsExitable()
 		int exitIndex = Util::Random(0, length - 1);
 
 		MapManager::Get().SetMapTile(exitablePosition[exitIndex], 'X');
+		MapManager::Get().FindImportantTiles();
+
 		return true;
 	}	
 
@@ -218,7 +218,9 @@ bool EditMouse::IsExitable()
 		// 경로가 없을 경우 탈출불가
 		if (path.empty())
 		{
-			// Todo: 로그 표시
+			// 로그 출력
+			LogManager::Get().PrintLog("맵을 다시 편집해주세요.");
+			LogManager::Get().PrintLog("탈출할 수 있는 경로가 없습니다.");
 			return false;
 		}
 

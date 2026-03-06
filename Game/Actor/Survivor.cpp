@@ -11,7 +11,8 @@ Survivor::Survivor(const Vector2& position, Color color)
 	astar = new AStar();
 	sortingOrder = 5;
 
-	timer.SetTargetTime(1.0f);
+	// Todo: 이동속도 조정
+	timer.SetTargetTime(0.2f);
 }
 
 Survivor::~Survivor()

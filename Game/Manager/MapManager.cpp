@@ -108,26 +108,26 @@ void MapManager::CheckFireAndExit()
 			{
 				// 상
 			case 0:
-				randX = Util::Random(0, mapWidth - 1);
+				randX = Util::Random(1, mapWidth - 2);
 				randY = 0;
 				break;
 
 				// 우
 			case 1:
 				randX = mapWidth - 1;
-				randY = Util::Random(0, mapHeight - 1);
+				randY = Util::Random(1, mapHeight - 2);
 				break;
 
 				// 하
 			case 2:
-				randX = Util::Random(0, mapWidth - 1);
+				randX = Util::Random(1, mapWidth - 2);
 				randY = mapHeight - 1;
 				break;
 
 				// 좌
 			default:
 				randX = 0;
-				randY = Util::Random(0, mapHeight - 1);
+				randY = Util::Random(1, mapHeight - 2);
 				break;
 			}
 
@@ -155,7 +155,7 @@ void MapManager::CheckFireAndExit()
 				}
 
 				// 4방향 중 한 곳이라도 빈 공간 존재시 생성 가능
-				if (mapData[nextY][nextY] == ' ')
+				if (mapData[nextY][nextX] == ' ')
 				{
 					isAllBlocked = false;
 				}
@@ -221,6 +221,41 @@ void MapManager::FindImportantTiles()
 			}
 		}
 	}
+}
+
+bool MapManager::IsExitablePosition(const Vector2& position)
+{
+	Vector2 topL = Vector2(0, 0);
+	Vector2 topR = Vector2(mapWidth - 1, 0);
+	Vector2 bottomL = Vector2(0, mapHeight - 1);
+	Vector2 bottomR = Vector2(mapWidth - 1, mapHeight - 1);
+
+	if (position.x == 0 || position.x == MapManager::Get().GetMapWidth() - 1 ||
+		position.y == 0 || position.y == MapManager::Get().GetMapHeight() - 1)
+	{
+		if (position == topL)
+		{
+			return false;
+		}
+		else if (position == topR)
+		{
+			return false;
+		}
+		else if (position == bottomL)
+		{
+			return false;
+		}
+		else if (position == bottomR)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 MapManager& MapManager::Get()
