@@ -55,6 +55,8 @@ void EditMouse::Tick(float deltaTime)
 			return;
 		}
 
+		SelectPositionClear();
+
 		Game::Get().ToggleMenu(1);
 	}
 

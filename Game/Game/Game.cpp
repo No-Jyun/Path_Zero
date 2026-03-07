@@ -46,7 +46,7 @@ Game::~Game()
 void Game::ToggleMenu(int levelIndex)
 {
 	// 화면 지우기
-	system("cls");
+	//system("cls");
 
 	// 메인 레벨 변경
 	mainLevel = levels[levelIndex];

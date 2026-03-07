@@ -19,6 +19,7 @@ void EscapeMouse::Tick(float deltaTime)
 	// 엔터 입력시 맵 토글
 	if (Input::Get().GetKeyDown(VK_RETURN))
 	{
+		SelectPositionClear();
 
 		Game::Get().ToggleMenu(0);
 	}
