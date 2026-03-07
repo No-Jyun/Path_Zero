@@ -1,5 +1,4 @@
 #include "MouseBase.h"
-#include "Render/Renderer.h"
 #include "Core/Input.h"
 #include "Game/Game.h"
 #include "Manager/MapManager.h"
@@ -58,11 +57,6 @@ void MouseBase::Tick(float deltaTime)
 void MouseBase::Draw()
 {
 	super::Draw();
-
-	for (const Vector2& selPos : selectedPositionInConsole)
-	{
-		Renderer::Get().Submit(" ", selPos, Color::BackGoundWhite, sortingOrder + 3);
-	}
 }
 
 void MouseBase::SelectPositionClear()

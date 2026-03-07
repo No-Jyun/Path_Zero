@@ -19,12 +19,18 @@ public:
 	// 불타일의 BFS
 	std::vector<Vector2> FindSpreadableTile();
 
+	// 생존자가 탈출 경로를 찾지 못할때 목적지와 가장 가까운 곳의 타일을 찾는 함수
+	Vector2 FindOneStepToGoal(const Vector2& curPosition, const Vector2& goalPosition);
+
 private:
 	// 맵 매니저로부터 맵 정보를 가져와 저장하는 함수
 	void LoadMapData();
 
 	// 대각선 방향 검증 함수
 	bool IsMovableDiagnal(const Vector2& curPos, const Vector2& direction);
+
+	// 맵 경계를 벗어났는지 확인하는 함수
+	bool IsOutMap(const Vector2& position);
 
 private:
 	// 맵 정보를 저장할 배열

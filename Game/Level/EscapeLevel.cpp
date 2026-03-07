@@ -76,9 +76,25 @@ void EscapeLevel::Tick(float deltaTime)
 		// 생존자 이동 순서는 랜덤으로 결정
 		Util::ShuffleVector(survivorVector);
 
-		for (Survivor* const survivor : survivorVector)
+		// 생존자의 사망 처리를 위해 이터레이터를 통해 순회
+		for (auto iterator = survivorVector.begin(); iterator != survivorVector.end();)
 		{
-			survivor->Move();
+			Survivor* curSurv = *iterator;
+
+			// 생존자 이동
+			curSurv->Move();
+
+			// 생존자 이동 후 파괴 요청 (탈출구 도달 등) 을 받았다면
+			if (curSurv->DestroyRequested())
+			{
+				// survivorVector에서 생존자 제거 및 다음 요소 가리키게 이동
+				iterator = survivorVector.erase(iterator);
+			}
+			else
+			{
+				// 파괴되지 않았다면 다음 생존자
+				iterator++;
+			}
 		}
 	}
 }

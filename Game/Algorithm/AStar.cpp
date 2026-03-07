@@ -82,15 +82,17 @@ std::vector<Node*> AStar::FindPath(Node* startNode)
 				continue;
 			}
 
-			// 생존자 간의 충돌 판단
-			// 이동하는 칸이 생존자인 경우
-			if (!IsOtherSurvivorTile(newPosition))
-			{
-				continue;
-			}
-
 			// 현재 노드를 기준으로 gCost 계산
 			float newGCost = currentNode->gCost + Direction::directionCost[directionIndex];
+
+			// 생존자 간의 충돌 판단
+			// 이동하는 칸이 생존자인 경우
+			// --> 다른 생존자가 있어도 경로 탐색 시에는 일단 지나갈 수 있는 길로 취급
+			// 다만 일반 비용보다 훨씬 큰 페널티 부여
+			if (!IsOtherSurvivorTile(newPosition))
+			{
+				newGCost += 5.0f;
+			}
 
 			// 갈 수는 있지만, 이미 방문한 곳인지 확인
 			if (HasVisited(newPosition, newGCost))

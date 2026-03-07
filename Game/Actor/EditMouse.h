@@ -14,6 +14,7 @@ public:
 	~EditMouse();
 
 	virtual void Tick(float deltaTime) override;
+	virtual void Draw() override;
 
 private:
 	void MakeTile(const char tile);

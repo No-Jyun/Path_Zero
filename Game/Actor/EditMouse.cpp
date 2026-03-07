@@ -6,6 +6,7 @@
 #include "Algorithm/AStar.h"
 #include "Algorithm/BFS.h"
 #include "Util/Util.h"
+#include "Render/Renderer.h"
 
 EditMouse::EditMouse(const Vector2& position)
 	: super(position)
@@ -84,6 +85,16 @@ void EditMouse::Tick(float deltaTime)
 	if (Input::Get().GetKeyDown('R'))
 	{
 		SelectPositionClear();
+	}
+}
+
+void EditMouse::Draw()
+{
+	super::Draw();
+
+	for (const Vector2& selPos : selectedPositionInConsole)
+	{
+		Renderer::Get().Submit(" ", selPos, Color::BackGoundWhite, sortingOrder + 3);
 	}
 }
 

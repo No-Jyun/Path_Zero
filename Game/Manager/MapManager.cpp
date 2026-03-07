@@ -207,6 +207,7 @@ void MapManager::FindImportantTiles()
 {
 	std::vector<Vector2>().swap(exitPositions);
 	std::vector<Vector2>().swap(firePositions);
+	std::vector<Vector2>().swap(survivorPositions);
 
 	for (int i = 0; i < mapHeight; i++)
 	{
@@ -219,6 +220,10 @@ void MapManager::FindImportantTiles()
 			else if (mapData[i][j] == 'F')
 			{
 				firePositions.emplace_back(Vector2(j, i));
+			}
+			else if (mapData[i][j] == 'S')
+			{
+				survivorPositions.emplace_back(Vector2(j, i));
 			}
 		}
 	}

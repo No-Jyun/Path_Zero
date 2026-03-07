@@ -1,4 +1,5 @@
 #include "EscapeMouse.h"
+#include "Actor/Survivor.h"
 #include "Core/Input.h"
 #include "Game/Game.h"
 
@@ -24,4 +25,13 @@ void EscapeMouse::Tick(float deltaTime)
 		Game::Get().ToggleMenu(0);
 	}
 
+	// 마우스 좌클릭을 뗐을 때
+	if (Input::Get().GetMouseButtonUp(0))
+	{
+		// 선택 영역 초기화
+		std::vector<Survivor*>().swap(selectedSurvivor);
+
+		// Todo: 선택 영역을 확인해서 생존자 배열에 추가
+		
+	}
 }

@@ -15,6 +15,6 @@ public:
 	virtual void Tick(float deltaTime) override;
 
 private:
-
+	std::vector<class Survivor*> selectedSurvivor;
 };
 
