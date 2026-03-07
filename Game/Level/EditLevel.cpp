@@ -1,12 +1,12 @@
 #include "EditLevel.h"
 #include "Manager/MapManager.h"
 #include "Manager/LogManager.h"
-#include "Engine/Engine.h"
+#include "Game/Game.h"
 #include "Render/Renderer.h"
 #include "Actor/EditMouse.h"
 #include "Actor/LogActor.h"
 
-const char* instructionString[] =
+static const char* instructionString[] =
 {
 	"조작법",
 	"클릭/드래그를 통해 변경할 곳을 선택합니다.",
@@ -36,28 +36,24 @@ EditLevel::EditLevel()
 {
 	MapManager::Get().SetNewGame();
 
-	AddNewActor(new EditMouse(Vector2(0, Engine::Get().Height() - 1)));
+	AddNewActor(new EditMouse(Vector2(0, Game::Get().Height() - 1)));
 
 	// 로그 위치 설정
 	int offsetX = MapManager::Get().GetMapWidth() + 5;
 	int offsetY = _countof(instructionString);
 	
-	// Todo: 레벨 전환 생각해야함
 	// 로그 매니저에게 전달할 배열 생성
-	std::vector<LogActor*> logVector;
 	for (int i = 0; i < LogManager::Get().GetLogCount(); i++)
 	{
 		LogActor* logActor = new LogActor(Vector2(offsetX, offsetY + i));
 		AddNewActor(logActor);
 		logVector.emplace_back(logActor);
 	}
-
-	// 로그 매니저 사용 준비
-	LogManager::Get().Initialize(logVector);
 }
 
 EditLevel::~EditLevel()
 {
+	std::vector<LogActor*>().swap(logVector);
 }
 
 void EditLevel::Draw()
@@ -71,6 +67,9 @@ void EditLevel::Draw()
 void EditLevel::LevelSetting()
 {
 	MapManager::Get().SetNewGame();
+
+	// 로그 매니저 사용 준비
+	LogManager::Get().Initialize(logVector);
 }
 
 void EditLevel::DrawMap()

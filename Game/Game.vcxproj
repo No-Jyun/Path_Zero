@@ -91,6 +91,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actor\EditMouse.cpp" />
+    <ClCompile Include="Actor\EscapeMouse.cpp" />
     <ClCompile Include="Actor\LogActor.cpp" />
     <ClCompile Include="Actor\Survivor.cpp" />
     <ClCompile Include="Algorithm\AStar.cpp" />
@@ -107,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor\EditMouse.h" />
+    <ClInclude Include="Actor\EscapeMouse.h" />
     <ClInclude Include="Actor\LogActor.h" />
     <ClInclude Include="Actor\MouseBase.h" />
     <ClInclude Include="Actor\Survivor.h" />

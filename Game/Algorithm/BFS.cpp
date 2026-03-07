@@ -9,7 +9,7 @@ BFS::BFS()
     LoadMapData();
 }
 
-std::vector<Vector2> BFS::findExitableTile()
+std::vector<Vector2> BFS::FindExitableTile()
 {
     // BFS 용 큐 선언
     std::queue<Vector2> queue;
@@ -74,6 +74,56 @@ std::vector<Vector2> BFS::findExitableTile()
     }
     
     return canExitPosition;
+}
+
+std::vector<Vector2> BFS::FindSpreadableTile()
+{
+    // BFS 용 큐 선언
+    std::queue<Vector2> queue;
+
+    // 반환용 배열
+    std::vector<Vector2> canSpreadPosition;
+
+    // 맵의 불 위치 가져오기
+    auto& firePos = MapManager::Get().GetFirePositions();
+
+    for (const Vector2& pos : firePos)
+    {
+        queue.emplace(pos);
+        mapVisited[pos.y][pos.x] = true;
+    }
+
+    // 현재 불타일에서 1번만 bfs 하면 됨
+    while (!queue.empty())
+    {
+        Vector2 nowPos = queue.front();
+        queue.pop();
+
+        // 8방향 안이쁨
+        for (int dir = 0; dir < Direction::direction4Length; dir++)
+        {
+            Vector2 nextPos = nowPos + Direction::fourDirection[dir];
+
+            // 불타일은 맵경계를 벗어날 수 있으므로 예외 처리
+            if (nextPos.x < 0 || nextPos.x >= MapManager::Get().GetMapWidth() ||
+                nextPos.y < 0 || nextPos.y >= MapManager::Get().GetMapHeight())
+            {
+                continue;
+            }
+
+            // 다음 위치가 방문한 위치라면 생략
+            if (mapVisited[nextPos.y][nextPos.x])
+            {
+                continue;
+            }
+
+            // 불타일은 모든 타일을 덮을 수 있으므로 바로 배열에 저장
+            canSpreadPosition.emplace_back(nextPos);
+            mapVisited[nextPos.y][nextPos.x] = true;
+        }
+    }
+
+    return canSpreadPosition;
 }
 
 bool BFS::IsMovableDiagnal(const Vector2& curPos, const Vector2& direction)

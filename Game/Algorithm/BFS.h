@@ -14,9 +14,10 @@ public:
 	BFS();
 		
 	// 탈출구 생성용 BFS
-	std::vector<Vector2> findExitableTile();
+	std::vector<Vector2> FindExitableTile();
 
 	// 불타일의 BFS
+	std::vector<Vector2> FindSpreadableTile();
 
 private:
 	// 맵 매니저로부터 맵 정보를 가져와 저장하는 함수

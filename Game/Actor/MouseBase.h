@@ -12,9 +12,7 @@ class MouseBase : public Actor
 	RTTI_DECLARATIONS(MouseBase, Actor)
 
 public:
-	MouseBase(const char* image = " ",
-		const Vector2& position = Vector2::Zero
-		);
+	MouseBase(const Vector2& position = Vector2::Zero);
 	virtual ~MouseBase();
 
 	virtual void Tick(float deltaTime) override;
@@ -23,9 +21,6 @@ public:
 protected:
 	// 현재 선택한 영역을 초기화하는 함수
 	void SelectPositionClear();
-
-	// 프로그램을 종료하는 함수
-	void QuitGame();
 
 	// 드래그 영역을 배열에 저장하는 함수
 	void DragProcess();

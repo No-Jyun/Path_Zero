@@ -19,10 +19,10 @@ public:
 	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;
 
+	void Move();
+
 private:
 	bool FindPath();
-
-	void Move();
 
 	Color GetPathColor();
 

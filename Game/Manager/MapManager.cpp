@@ -2,6 +2,7 @@
 #include "Engine/Engine.h"
 #include "Util/Util.h"
 #include "Util/Direction.h"
+#include "Algorithm/BFS.h"
 
 // 정적 변수 초기화
 MapManager* MapManager::instance = nullptr;
@@ -256,6 +257,24 @@ bool MapManager::IsExitablePosition(const Vector2& position)
 	}
 
 	return false;
+}
+
+void MapManager::SpreadFire()
+{
+	// 불타일 번짐을 위한 BFS 사용
+	BFS bfs;
+
+	// 확산할 타일 위치 가져오기
+	auto spreadableTile = bfs.FindSpreadableTile();
+
+	for (const Vector2& tilePosition : spreadableTile)
+	{
+		// Todo: 확산 위치에 생존자 처리 필요
+		SetMapTile(tilePosition, 'F');
+	}
+
+	// 불타일 정보 업데이트
+	FindImportantTiles();
 }
 
 MapManager& MapManager::Get()

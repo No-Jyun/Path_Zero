@@ -7,8 +7,8 @@
 #include <cmath>
 #include <vector>
 
-MouseBase::MouseBase(const char* image,	const Vector2& position)
-	: super(image, position)
+MouseBase::MouseBase(const Vector2& position)
+	: super(" ", position)
 {
 	sortingOrder = 3;
 	SelectPositionClear();
@@ -102,10 +102,4 @@ void MouseBase::DragProcess()
 			selectedPositionInConsole.emplace_back(Vector2(x, y));
 		}
 	}
-}
-
-void MouseBase::QuitGame()
-{
-	// 엔진 종료 요청
-	Game::Get().QuitEngine();
 }

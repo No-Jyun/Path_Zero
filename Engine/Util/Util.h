@@ -4,6 +4,8 @@
 #include "Math/Color.h"
 #include <time.h>
 #include <cmath>
+#include <random>
+#include <algorithm>
 
 using namespace Wanted;
 
@@ -85,6 +87,21 @@ namespace Util
 
 		float diff = (max - min);
 		return (random * diff) + min;
+	}
+
+	// 공유해서 쓸 난수 엔진
+	inline std::mt19937& GetGeneratorEngine() 
+	{
+		static std::random_device rd;
+		static std::mt19937 gen(rd());
+		return gen;
+	}
+
+	// 벡터 랜덤 셔플 함수
+	template<typename T>
+	void ShuffleVector(std::vector<T>& vec) 
+	{
+		std::shuffle(vec.begin(), vec.end(), GetGeneratorEngine());
 	}
 
 	// 어떤 값을 두 수 사이로 고정할 때 사용하는 함수.

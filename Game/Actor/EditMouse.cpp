@@ -8,7 +8,7 @@
 #include "Util/Util.h"
 
 EditMouse::EditMouse(const Vector2& position)
-	: super(" ", position)
+	: super(position)
 {
 }
 
@@ -181,7 +181,7 @@ bool EditMouse::IsExitable()
 	{
 		// BFS 알고리즘을 통해 가능한 맵경계를 찾자!
 		BFS bfs;
-		auto exitablePosition = bfs.findExitableTile();
+		auto exitablePosition = bfs.FindExitableTile();
 
 		// 탈출할 수 있는 경로가 없는 경우 반환 및 로그
 		if (exitablePosition.empty())

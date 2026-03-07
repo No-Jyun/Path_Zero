@@ -29,6 +29,9 @@ public:
 	// 탈출구가 가능한 위치인지 알려주는 함수
 	bool IsExitablePosition(const Vector2& position);
 
+	// 불 타일 확산 함수
+	void SpreadFire();
+
 	// Getter
 	inline const std::vector<std::string>& GetMapData() { return mapData; }
 	inline const int GetMapWidth() { return mapWidth; }

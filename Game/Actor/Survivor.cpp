@@ -11,8 +11,7 @@ Survivor::Survivor(const Vector2& position, Color color)
 	astar = new AStar();
 	sortingOrder = 5;
 
-	// Todo: 이동속도 조정
-	timer.SetTargetTime(0.2f);
+	//timer.SetTargetTime(0.2f);
 }
 
 Survivor::~Survivor()
@@ -36,7 +35,7 @@ void Survivor::Tick(float deltaTime)
 		return;
 	}
 	
-	Move();
+	//Move();
 }
 
 void Survivor::Draw()
@@ -74,12 +73,14 @@ bool Survivor::FindPath()
 
 void Survivor::Move()
 {
-	if (!timer.IsTimeOut())
+	// 생존자들의 이동 반영하여 다시 경로 찾기
+	bool isFindPath = FindPath();
+
+	// Todo: 경로 없으면 로그 출력 및 애니메이션
+	if (!isFindPath)
 	{
 		return;
 	}
-
-	timer.Reset();
 
 	// 다음으로 이동할 노드에서 위치 가져오기
 	Vector2 movedPosition = path[0]->GetPosition();
@@ -95,7 +96,7 @@ void Survivor::Move()
 	position = movedPosition;
 	
 	// 이동한 좌표를 플레이어 표시
-	MapManager::Get().SetMapTile(position, 'P');
+	MapManager::Get().SetMapTile(position, 'S');
 }
 
 Color Survivor::GetPathColor()

@@ -23,6 +23,7 @@ private:
 	void DrawInstruction();
 
 private:
-
+	// 로그 액터 저장하는 배열
+	std::vector<class LogActor*> logVector;
 };
 
