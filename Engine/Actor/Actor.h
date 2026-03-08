@@ -51,6 +51,7 @@ namespace Wanted
 		inline bool IsActive() const { return isActive && !destroyRequested; }
 		inline bool DestroyRequested() const{ return destroyRequested; }
 		inline int GetSortingOrder() const { return sortingOrder; }
+		inline Color GetColor() const { return color; }
 
 	protected:
 		// 이미 BeginPlay 이벤트를 받았는지 여부

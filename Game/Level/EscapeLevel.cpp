@@ -26,7 +26,7 @@ EscapeLevel::EscapeLevel()
 	survivorMoveTimer.SetTargetTime(0.5f);
 
 	// 마우스 액터 생성
-	AddNewActor(new EscapeMouse(Vector2(0, Game::Get().Height() - 1)));
+	AddNewActor(new EscapeMouse(Vector2(0, Game::Get().Height() - 1), &survivorVector));
 
 	// 로그 위치 설정
 	int offsetX = MapManager::Get().GetMapWidth() + 5;
