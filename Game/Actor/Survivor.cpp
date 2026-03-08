@@ -5,9 +5,12 @@
 #include "Algorithm/BFS.h"
 #include "Render/Renderer.h"
 #include "Manager/MapManager.h"
+#include "Manager/LogManager.h"
 
-Survivor::Survivor(const Vector2& position, Color color)
-	: super("S", position, color)
+#include <string>
+
+Survivor::Survivor(const char* text, const Vector2& position, Color color)
+	: super(text, position, color)
 {
 	astar = new AStar();
 	sortingOrder = 5;
@@ -35,14 +38,6 @@ void Survivor::Tick(float deltaTime)
 {
 	super::Tick(deltaTime);
 
-	// 플레이어가 생존자에게 명령했다면
-	//if (hasCommandMove)
-	//{
-	//	FindPathToTarget();
-	//	//path = astar->FindPathToTarget(new Node(position), commandTargetPosition);
-	//	return;
-	//}
-
 	// 명령내린 목적지 도착 시
 	if (isReachTarget)
 	{
@@ -57,15 +52,6 @@ void Survivor::Tick(float deltaTime)
 		}
 		return;
 	}
-
-	//bool isFindPath = FindPath();
-	//
-	//// Todo: 경로 없으면 로그 출력 및 애니메이션
-	//if (!isFindPath)
-	//{
-	//	return;
-	//}
-
 }
 
 void Survivor::Draw()
@@ -101,10 +87,10 @@ bool Survivor::FindPath()
 	return true;
 }
 
-bool Survivor::FindPathToTarget()
+bool Survivor::FindPathToTarget(const Vector2& targetPosition)
 {
 	// 목적지까지 A* 알고리즘 적용 및 경로 저장
-	path = astar->FindPathToTarget(new Node(position), commandTargetPosition);
+	path = astar->FindPathToTarget(new Node(position), targetPosition);
 
 	// 경로를 못 찾은 경우
 	if (path.empty())
@@ -126,7 +112,7 @@ void Survivor::MoveToExitOrTarget()
 
 	if (hasCommandMove)
 	{
-		bool isFindPathToTarget = FindPathToTarget();
+		bool isFindPathToTarget = FindPathToTarget(commandTargetPosition);
 
 		// 빈 경로라면 - 도달 했다면
 		if (!isFindPathToTarget)
@@ -139,17 +125,9 @@ void Survivor::MoveToExitOrTarget()
 
 		Vector2 movedPosition = path[0]->GetPosition();
 
-		char targetTile = MapManager::Get().GetMapPositionData(movedPosition);
-
-		if (targetTile == '#' || targetTile == 'F')
+		// 막힌 타일이 다른 생존자인 경우 특별 처리
+		if (MapManager::Get().GetMapPositionData(movedPosition) == 'S')
 		{
-			// 벽이나 불이면 멈추기
-			return;
-		}
-
-		if (targetTile == 'S')
-		{
-			// 막힌 타일이 다른 생존자인 경우 특별 처리
 			// 목적지 근처인데 다른 생존자가 길막 중이라면, 무리 지어 도달했다고 판단
 			if (path.size() <= 3)
 			{
@@ -182,6 +160,9 @@ void Survivor::MoveToExitOrTarget()
 	// 경로 존재시 이동
 	if (isFindPath)
 	{
+		// 상태 변수 초기화
+		isNoExitAndRunAway = false;
+
 		// 다음으로 이동할 노드에서 위치 가져오기
 		Vector2 movedPosition = path[0]->GetPosition();
 
@@ -189,7 +170,10 @@ void Survivor::MoveToExitOrTarget()
 		// 이동하는 곳이 탈출구인지 확인
 		if (MapManager::Get().GetMapPositionData(movedPosition) == 'X')
 		{
-			// Todo: 로그 표시
+			// 로그 표시
+			std::string logMsg = std::string(image) + "번 생존자가 탈출했습니다!!";
+			LogManager::Get().PrintLog(logMsg.c_str(), GetPathColor());
+
 			// 플레이어 제거
 			Destroy();
 
@@ -220,47 +204,51 @@ void Survivor::MoveToExitOrTarget()
 		return;
 	}
 
-	// Todo: 경로 없으면 로그 출력 및 애니메이션
-	// 경로가 없다면 8방향 중에서 탈출구와 가장 가까운 빈 공간으로 1칸 이동
-	Vector2 nearestExit = Vector2(-1, -1);
-	float minExitDist = FLT_MAX;
+	// 경로가 없다면 BFS 알고리즘을 통해 불 타일과 가장 먼 타일 탐색
+	BFS bfs;
+	Vector2 safestPosition = bfs.FindSafestTileFromFire(position);
 
-	// 가장 가까운 탈출구 탐색
-	for (const Vector2& exitPos : MapManager::Get().GetExitPositions())
+	// 현재 위치가 불과 가장 먼 위치라면 대기
+	if (safestPosition == position)
 	{
-		// 탈출구와 생존자의 거리 계산
-		float dist = Util::Sqrt(
-			static_cast<float>(
-				(exitPos.x - position.x) * (exitPos.x - position.x) +
-				(exitPos.y - position.y) * (exitPos.y - position.y))
-		);
-
-		// 최소 거리 갱신
-		if (dist < minExitDist)
-		{
-			minExitDist = dist;
-			nearestExit = exitPos;
-		}
-	}
-
-	// 만약 맵에 탈출구가 아예 없다면 가만히 있는다.
-	if (nearestExit.x == -1)
-	{
-		// Todo: 로그 및 애니메이션 표시
 		return;
 	}
 
-	// 8방향 탐색을 위한 BFS 객체
-	BFS bfs;
-	Vector2 bestMovePosition = bfs.FindOneStepToGoal(position, nearestExit);
-
-	// 현재 위치보다 더 가까워지는 타일이 있다면 그곳으로 1칸 이동
-	if (bestMovePosition != position)
+	// 이전에 도망치고 있지 않았는데, 이번에 처음 도망치게 되는 경우
+	if (!isNoExitAndRunAway)
 	{
-		MapManager::Get().SetMapTile(position, ' ');
-		position = bestMovePosition;
-		MapManager::Get().SetMapTile(position, 'S');
+		// 상태 저장
+		isNoExitAndRunAway = true;
+
+		// 로그 출력
+		char buffer[128];
+		sprintf_s(buffer, 128, "[%s] 탈출 경로가 차단되어 가장 안전한 곳으로 도망칩니다!", image);
+		LogManager::Get().PrintLog(buffer, GetPathColor());
 	}
+
+	// 해당 타일을 향한 A* 알고리즘으로 경로 업데이트
+	isFindPath = FindPathToTarget(safestPosition);
+
+	if (!isFindPath)
+	{
+		return;
+	}
+
+	Vector2 movedPosition = path[0]->GetPosition();
+
+	if (MapManager::Get().GetMapPositionData(movedPosition) == 'S')
+	{
+		// 누군가가 길을 막으면 리턴
+		return;
+	}
+
+	// 경로에서 삭제
+	path.erase(path.begin());
+
+	// 이동 처리
+	MapManager::Get().SetMapTile(position, ' ');
+	position = movedPosition;
+	MapManager::Get().SetMapTile(position, 'S');
 }
 
 void Survivor::CommandMoveTo(const Vector2& targetPosition)

@@ -22,8 +22,8 @@ static const char* instructionString[] =
 EscapeLevel::EscapeLevel()
 {	
 	// Todo: 속도 조정
-	fireSpreadTimer.SetTargetTime(200.0f);
-	survivorMoveTimer.SetTargetTime(0.2f);
+	fireSpreadTimer.SetTargetTime(2.0f);
+	survivorMoveTimer.SetTargetTime(0.4f);
 
 	// 마우스 액터 생성
 	AddNewActor(new EscapeMouse(Vector2(0, Game::Get().Height() - 1), &survivorVector));
@@ -65,6 +65,32 @@ void EscapeLevel::Tick(float deltaTime)
 
 		// 불 타일 확산
 		MapManager::Get().SpreadFire();
+
+		// 불 확산 시 생존자 타일로 확산했는지 체크
+		for (auto iterator = survivorVector.begin(); iterator != survivorVector.end();)
+		{
+			Survivor* curSurv = *iterator;
+			Vector2 survPos = curSurv->GetPosition();
+
+			// 현재 생존자 타일이 불 타일로 변경되었다면
+			if (MapManager::Get().GetMapPositionData(survPos) == 'F')
+			{
+				// 로그 출력
+				char buffer[128];
+				sprintf_s(buffer, 128, "[%s] 생존자가 불길에 휩싸였습니다...", curSurv->GetImage());
+				LogManager::Get().PrintLog(buffer, curSurv->GetColor());
+
+				// 생존자 액터 사망 처리
+				curSurv->Destroy();
+
+				// 벡터에서 제거
+				iterator = survivorVector.erase(iterator);
+			}
+			else
+			{
+				iterator++;
+			}
+		}
 	}
 
 	// 생존자 이동 시간 만료시
@@ -125,13 +151,18 @@ void EscapeLevel::LevelSetting()
 void EscapeLevel::Initialize()
 {
 	MapManager::Get().StartGame();
-
+	
 	// 생존자 액터 생성
 	auto survivorPos = MapManager::Get().GetSurvivorPositions();
 	int survivorIndex = 0;
 	for (; survivorIndex < static_cast<int>(survivorPos.size()); survivorIndex++)
 	{
-		Survivor* newSurvivor = new Survivor(survivorPos[survivorIndex], survivorColors[survivorIndex]);
+		Survivor* newSurvivor = new Survivor(
+			std::to_string(survivorIndex + 1).c_str(),
+			survivorPos[survivorIndex],
+			survivorColors[survivorIndex]
+		);
+
 		AddNewActor(newSurvivor);
 		survivorVector.emplace_back(newSurvivor);
 	}

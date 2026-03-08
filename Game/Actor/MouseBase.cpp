@@ -65,6 +65,8 @@ void MouseBase::SelectPositionClear()
 	lastSelectedPosition = Vector2::Zero;
 
 	selectedPositionInConsole.clear();
+
+	isFirstClicked = true;
 }
 
 void MouseBase::DragProcess()

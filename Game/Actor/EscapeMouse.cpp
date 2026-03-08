@@ -3,6 +3,7 @@
 #include "Core/Input.h"
 #include "Game/Game.h"
 #include "Manager/MapManager.h"
+#include "Manager/LogManager.h"
 #include "Render/Renderer.h"
 #include "Util/Util.h"
 
@@ -87,6 +88,13 @@ void EscapeMouse::Tick(float deltaTime)
 		{
 			survivior->CommandMoveTo(targetPos);
 		}
+
+		// 로그 출력
+		char buffer[128];
+		sprintf_s(buffer, 128, "선택한 %d명의 생존자들을 (%d, %d)로 이동시킵니다.",
+			static_cast<int>(selectedSurvivor.size()), targetPos.x, targetPos.y);
+
+		LogManager::Get().PrintLog(buffer);
 	}
 }
 
@@ -134,8 +142,8 @@ void EscapeMouse::Draw()
 
 		Survivor* survivor = selectedSurvivor[i];
 
-		sprintf_s(infoBuffer[i], 128, "[S] 위치 : (%d, %d)",
-			survivor->GetPosition().x, survivor->GetPosition().y);
+		sprintf_s(infoBuffer[i], 128, "[%s] 위치 : (%d, %d)",
+			survivor->GetImage(), survivor->GetPosition().x, survivor->GetPosition().y);
 
 		Renderer::Get().Submit(infoBuffer[i], drawPos, survivor->GetColor());
 	}

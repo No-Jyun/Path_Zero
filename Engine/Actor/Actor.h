@@ -52,6 +52,7 @@ namespace Wanted
 		inline bool DestroyRequested() const{ return destroyRequested; }
 		inline int GetSortingOrder() const { return sortingOrder; }
 		inline Color GetColor() const { return color; }
+		inline const char* GetImage() const { return image; }
 
 	protected:
 		// 이미 BeginPlay 이벤트를 받았는지 여부

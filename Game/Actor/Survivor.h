@@ -13,7 +13,7 @@ class Survivor: public Actor
 	RTTI_DECLARATIONS(Survivor, Actor)
 
 public:
-	Survivor(const Vector2& position, Color color);
+	Survivor(const char* text, const Vector2& position, Color color);
 	~Survivor();
 
 	virtual void BeginPlay() override;
@@ -27,7 +27,7 @@ public:
 private:
 	bool FindPath();
 
-	bool FindPathToTarget();
+	bool FindPathToTarget(const Vector2& targetPosition);
 
 	Color GetPathColor();
 
@@ -47,5 +47,8 @@ private:
 
 	// 명령한 목적지 좌표
 	Vector2 commandTargetPosition;
+
+	// 불을 피해 도망치는 중인지 상태를 저장하는 변수
+	bool isNoExitAndRunAway = false;
 };
 

@@ -19,8 +19,8 @@ public:
 	// 불타일의 BFS
 	std::vector<Vector2> FindSpreadableTile();
 
-	// 생존자가 탈출 경로를 찾지 못할때 목적지와 가장 가까운 곳의 타일을 찾는 함수
-	Vector2 FindOneStepToGoal(const Vector2& curPosition, const Vector2& goalPosition);
+	// 생존자가 탈출 경로를 찾지 못할때 불 타일과 가장 먼 곳을 찾는 함수
+	Vector2 FindSafestTileFromFire(const Vector2& curPosition);
 
 private:
 	// 맵 매니저로부터 맵 정보를 가져와 저장하는 함수
