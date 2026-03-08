@@ -22,7 +22,7 @@ void EscapeMouse::Tick(float deltaTime)
 	{
 		SelectPositionClear();
 
-		Game::Get().ToggleMenu(0);
+		Game::Get().ToggleMenu(1);
 	}
 
 	// 마우스 좌클릭을 뗐을 때

@@ -97,6 +97,7 @@
     <ClCompile Include="Algorithm\AStar.cpp" />
     <ClCompile Include="Algorithm\BFS.cpp" />
     <ClCompile Include="Level\EscapeLevel.cpp" />
+    <ClCompile Include="Level\MainMenuLevel.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Actor\MouseBase.cpp" />
     <ClCompile Include="Game\Game.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Level\EditLevel.h" />
     <ClInclude Include="Level\EscapeLevel.h" />
+    <ClInclude Include="Level\MainMenuLevel.h" />
     <ClInclude Include="Manager\LogManager.h" />
     <ClInclude Include="Manager\MapManager.h" />
     <ClInclude Include="Util\Direction.h" />

@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Level/EditLevel.h"
 #include "Level/EscapeLevel.h"
+#include "Level/MainMenuLevel.h"
 #include "Manager/MapManager.h"
 #include "Manager/LogManager.h"
 #include "Util/Util.h"
@@ -18,6 +19,7 @@ Game::Game()
 
 	logManager = new LogManager();
 
+	levels.emplace_back(new MainMenuLevel());
 	levels.emplace_back(new EditLevel());
 	levels.emplace_back(new EscapeLevel());
 

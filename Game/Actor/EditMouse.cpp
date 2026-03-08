@@ -47,6 +47,13 @@ void EditMouse::Tick(float deltaTime)
 		return;
 	}
 
+	// 메인화면으로 이동
+	if (Input::Get().GetKeyDown(VK_ESCAPE))
+	{
+		Game::Get().ToggleMenu(0);
+		return;
+	}
+
 	// 엔터 입력시 맵 토글
 	if (Input::Get().GetKeyDown(VK_RETURN))
 	{
@@ -58,7 +65,8 @@ void EditMouse::Tick(float deltaTime)
 
 		SelectPositionClear();
 
-		Game::Get().ToggleMenu(1);
+		Game::Get().ToggleMenu(2);
+		return;
 	}
 
 	// 선택 영역 벽 생성
