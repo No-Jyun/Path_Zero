@@ -98,6 +98,11 @@ namespace Wanted
 		}
 	}
 
+	void Level::LevelClear()
+	{
+
+	}
+
 	void Level::AddNewActor(Actor* newActor)
 	{
 		// push 류는 L-value 레퍼런스를 받음 (L-value 레퍼런스은 복사를 안함

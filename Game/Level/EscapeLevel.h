@@ -16,6 +16,7 @@ public:
 
 	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;
+	virtual void LevelClear() override;
 
 	// 레벨이 토글됐을 때 호출할 이벤트 함수
 	virtual void LevelSetting() override;
@@ -36,6 +37,9 @@ private:
 	// 생존자 액터를 저장할 배열
 	std::vector<class Survivor*> survivorVector;
 
+	// 마우스 액터 저장용 변수
+	class EscapeMouse* mouseActor = nullptr;
+
 	// 불 확산 제어 타이머
 	Timer fireSpreadTimer;
 
@@ -45,5 +49,7 @@ private:
 	// 생존자 이동 제어 타이머
 	Timer survivorMoveTimer;
 
+	// 일시정지 팝업 액터를 저장할 변수
+	class PauseMenuPopup* pauseMenuActor = nullptr;
 };
 

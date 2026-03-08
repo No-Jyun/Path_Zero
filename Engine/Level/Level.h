@@ -25,6 +25,7 @@ namespace Wanted
 		virtual void Tick(float deltaTime);
 		virtual void Draw();
 		virtual void LevelSetting() = 0;
+		virtual void LevelClear();
 
 		// 액터 추가 함수
 		void AddNewActor(Actor* newActor);

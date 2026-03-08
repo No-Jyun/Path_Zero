@@ -22,15 +22,6 @@ void EscapeMouse::Tick(float deltaTime)
 {
 	super::Tick(deltaTime);
 
-	// Todo: 임시 코드
-	// 엔터 입력시 맵 토글
-	if (Input::Get().GetKeyDown(VK_RETURN))
-	{
-		SelectPositionClear();
-
-		Game::Get().ToggleMenu(1);
-	}
-
 	// 마우스 좌클릭을 뗐을 때
 	if (Input::Get().GetMouseButtonUp(0))
 	{

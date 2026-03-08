@@ -18,10 +18,10 @@ public:
 	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;
 
-protected:
 	// 현재 선택한 영역을 초기화하는 함수
 	void SelectPositionClear();
 
+protected:
 	// 드래그 영역을 배열에 저장하는 함수
 	void DragProcess();
 

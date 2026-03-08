@@ -93,6 +93,7 @@
     <ClCompile Include="Actor\EditMouse.cpp" />
     <ClCompile Include="Actor\EscapeMouse.cpp" />
     <ClCompile Include="Actor\LogActor.cpp" />
+    <ClCompile Include="Actor\PauseMenuPopup.cpp" />
     <ClCompile Include="Actor\Survivor.cpp" />
     <ClCompile Include="Algorithm\AStar.cpp" />
     <ClCompile Include="Algorithm\BFS.cpp" />
@@ -112,6 +113,7 @@
     <ClInclude Include="Actor\EscapeMouse.h" />
     <ClInclude Include="Actor\LogActor.h" />
     <ClInclude Include="Actor\MouseBase.h" />
+    <ClInclude Include="Actor\PauseMenuPopup.h" />
     <ClInclude Include="Actor\Survivor.h" />
     <ClInclude Include="Algorithm\AStar.h" />
     <ClInclude Include="Algorithm\BFS.h" />

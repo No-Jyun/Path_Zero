@@ -50,6 +50,9 @@ void Game::ToggleMenu(int levelIndex)
 	// 화면 지우기
 	//system("cls");
 
+	// 레벨 변경 전 레벨 클리어
+	mainLevel->LevelClear();
+
 	// 메인 레벨 변경
 	mainLevel = levels[levelIndex];
 	mainLevel->LevelSetting();

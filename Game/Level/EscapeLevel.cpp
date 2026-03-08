@@ -4,9 +4,11 @@
 #include "Actor/Survivor.h"
 #include "Actor/LogActor.h"
 #include "Actor/EscapeMouse.h"
+#include "Actor/PauseMenuPopup.h"
 #include "Render/Renderer.h"
 #include "Game/Game.h"
 #include "Util/Util.h"
+#include "Core/Input.h"
 
 static const Color survivorColors[6] =
 {
@@ -20,13 +22,14 @@ static const char* instructionString[] =
 };
 
 EscapeLevel::EscapeLevel()
-{	
+{
 	// Todo: 속도 조정
 	fireSpreadTimer.SetTargetTime(2.0f);
 	survivorMoveTimer.SetTargetTime(0.4f);
 
 	// 마우스 액터 생성
-	AddNewActor(new EscapeMouse(Vector2(0, Game::Get().Height() - 1), &survivorVector));
+	mouseActor = new EscapeMouse(Vector2(0, Game::Get().Height() - 1), &survivorVector);
+	AddNewActor(mouseActor);
 
 	// 로그 위치 설정
 	int offsetX = MapManager::Get().GetMapWidth() + 5;
@@ -39,6 +42,10 @@ EscapeLevel::EscapeLevel()
 		AddNewActor(logActor);
 		logVector.emplace_back(logActor);
 	}
+
+	// 일시정지 팝업 액터 생성
+	pauseMenuActor = new PauseMenuPopup();
+	AddNewActor(pauseMenuActor);
 }
 
 EscapeLevel::~EscapeLevel()
@@ -48,9 +55,21 @@ EscapeLevel::~EscapeLevel()
 
 void EscapeLevel::Tick(float deltaTime)
 {
+	if (Input::Get().GetKeyDown(VK_ESCAPE))
+	{
+		pauseMenuActor->SetActive(!pauseMenuActor->IsActive());
+	}
+
 	super::Tick(deltaTime);
 
-	// 불 확산 타이머
+	// 일시정지 메뉴가 활성화되면 다른 로직 처리 X
+	if (pauseMenuActor->IsActive())
+	{
+		// 일시정지 상태는 아래쪽 액터 갱신 및 타이머 로직을 실행하지 않고 리턴
+		return;
+	}
+
+	// 불 확산 타이머 / 생존자 이동 타이머
 	fireSpreadTimer.Tick(deltaTime);
 	survivorMoveTimer.Tick(deltaTime);
 
@@ -59,7 +78,7 @@ void EscapeLevel::Tick(float deltaTime)
 	{
 		// 타이머 리셋
 		fireSpreadTimer.Reset();
-		
+
 		// 색상 변경 표시
 		colorSwap = !colorSwap;
 
@@ -133,6 +152,11 @@ void EscapeLevel::Draw()
 	DrawInstruction();
 }
 
+void EscapeLevel::LevelClear()
+{
+	mouseActor->SelectPositionClear();
+}
+
 void EscapeLevel::LevelSetting()
 {
 	// 현재 생성되었던 생존자 메모리 정리
@@ -151,7 +175,7 @@ void EscapeLevel::LevelSetting()
 void EscapeLevel::Initialize()
 {
 	MapManager::Get().StartGame();
-	
+
 	// 생존자 액터 생성
 	auto survivorPos = MapManager::Get().GetSurvivorPositions();
 	int survivorIndex = 0;
@@ -183,7 +207,7 @@ void EscapeLevel::DrawMap()
 		for (int j = 0;j < cols;j++)
 		{
 			Vector2 drawPosition = Vector2(j, i);
-			
+
 			Color color = Color::White;
 			if (MapManager::Get().GetMapPositionData(drawPosition) == 'F')
 			{
