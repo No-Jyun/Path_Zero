@@ -4,6 +4,7 @@
 #include "Game/Game.h"
 #include "Manager/MapManager.h"
 #include "Render/Renderer.h"
+#include "Util/Util.h"
 
 EscapeMouse::EscapeMouse(const Vector2& position, std::vector<class Survivor*>* allSurvivors)
 	: super(position), allSurvivors(allSurvivors)
@@ -75,10 +76,17 @@ void EscapeMouse::Tick(float deltaTime)
 
 		Vector2 targetPos = Input::Get().MousePosition();
 
-		// 선택된 모든 생존자에게 목표 위치 전달 및 이동
-		// 배열 셔플 하여 랜덤 이동순서
+		// 선택된 배열에 접근 불가능한 생존자 삭제
+		EraseUnaccessableSurvivor();
 
-		SelectPositionClear();
+		// 배열 셔플 하여 랜덤 이동순서
+		Util::ShuffleVector(selectedSurvivor);
+		 
+		// 선택된 모든 생존자에게 목표 위치 전달 및 이동
+		for (Survivor* survivior : selectedSurvivor)
+		{
+			survivior->CommandMoveTo(targetPos);
+		}
 	}
 }
 

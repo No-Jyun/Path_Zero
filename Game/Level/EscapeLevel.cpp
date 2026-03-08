@@ -22,8 +22,8 @@ static const char* instructionString[] =
 EscapeLevel::EscapeLevel()
 {	
 	// Todo: 속도 조정
-	fireSpreadTimer.SetTargetTime(0.8f);
-	survivorMoveTimer.SetTargetTime(0.5f);
+	fireSpreadTimer.SetTargetTime(200.0f);
+	survivorMoveTimer.SetTargetTime(0.2f);
 
 	// 마우스 액터 생성
 	AddNewActor(new EscapeMouse(Vector2(0, Game::Get().Height() - 1), &survivorVector));
@@ -82,7 +82,7 @@ void EscapeLevel::Tick(float deltaTime)
 			Survivor* curSurv = *iterator;
 
 			// 생존자 이동
-			curSurv->Move();
+			curSurv->MoveToExitOrTarget();
 
 			// 생존자 이동 후 파괴 요청 (탈출구 도달 등) 을 받았다면
 			if (curSurv->DestroyRequested())

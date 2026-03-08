@@ -12,7 +12,7 @@ Survivor::Survivor(const Vector2& position, Color color)
 	astar = new AStar();
 	sortingOrder = 5;
 
-	//timer.SetTargetTime(0.2f);
+	timer.SetTargetTime(1.0f);
 }
 
 Survivor::~Survivor()
@@ -23,20 +23,49 @@ Survivor::~Survivor()
 	std::vector<Node*>().swap(path);
 }
 
+void Survivor::BeginPlay()
+{
+	super::BeginPlay();
+
+	// 액터 첫 시작시 경로 검색 및 저장
+	path = astar->FindPath(new Node(position));
+}
+
 void Survivor::Tick(float deltaTime)
 {
 	super::Tick(deltaTime);
-	timer.Tick(deltaTime);
 
-	bool isFindPath = FindPath();
+	// 플레이어가 생존자에게 명령했다면
+	//if (hasCommandMove)
+	//{
+	//	FindPathToTarget();
+	//	//path = astar->FindPathToTarget(new Node(position), commandTargetPosition);
+	//	return;
+	//}
 
-	// Todo: 경로 없으면 로그 출력 및 애니메이션
-	if (!isFindPath)
+	// 명령내린 목적지 도착 시
+	if (isReachTarget)
 	{
+		// 생존자 대기
+		timer.Tick(deltaTime);
+
+		if (timer.IsTimeOut())
+		{
+			timer.Reset();
+
+			isReachTarget = false;
+		}
 		return;
 	}
 
-	//Move();
+	//bool isFindPath = FindPath();
+	//
+	//// Todo: 경로 없으면 로그 출력 및 애니메이션
+	//if (!isFindPath)
+	//{
+	//	return;
+	//}
+
 }
 
 void Survivor::Draw()
@@ -54,7 +83,7 @@ void Survivor::Draw()
 	}
 
 	// 마지막 노드의 위치 (탈출구의 위치) 는 탈출구에 색 입히기
-	Renderer::Get().Submit("X", nodePos, GetPathColor(), sortingOrder);
+	Renderer::Get().Submit("X", nodePos, GetPathColor(), sortingOrder - 1);
 }
 
 bool Survivor::FindPath()
@@ -72,8 +101,81 @@ bool Survivor::FindPath()
 	return true;
 }
 
-void Survivor::Move()
+bool Survivor::FindPathToTarget()
 {
+	// 목적지까지 A* 알고리즘 적용 및 경로 저장
+	path = astar->FindPathToTarget(new Node(position), commandTargetPosition);
+
+	// 경로를 못 찾은 경우
+	if (path.empty())
+	{
+		return false;
+	}
+
+	// 경로를 찾은 경우
+	return true;
+}
+
+void Survivor::MoveToExitOrTarget()
+{
+	// 목적지에 도착 후 타이머가 지나지 않았다면 대기
+	if (isReachTarget)
+	{
+		return;
+	}
+
+	if (hasCommandMove)
+	{
+		bool isFindPathToTarget = FindPathToTarget();
+
+		// 빈 경로라면 - 도달 했다면
+		if (!isFindPathToTarget)
+		{
+			// 멈춰서 대기
+			hasCommandMove = false;
+			isReachTarget = true;
+			return;
+		}
+
+		Vector2 movedPosition = path[0]->GetPosition();
+
+		char targetTile = MapManager::Get().GetMapPositionData(movedPosition);
+
+		if (targetTile == '#' || targetTile == 'F')
+		{
+			// 벽이나 불이면 멈추기
+			return;
+		}
+
+		if (targetTile == 'S')
+		{
+			// 막힌 타일이 다른 생존자인 경우 특별 처리
+			// 목적지 근처인데 다른 생존자가 길막 중이라면, 무리 지어 도달했다고 판단
+			if (path.size() <= 3)
+			{
+				hasCommandMove = false;
+				isReachTarget = true;
+			}
+
+			// 도착 판정이든 아니든 움직일 수는 없음
+			return;
+		}
+
+		// 경로에서 삭제
+		path.erase(path.begin());
+
+		// 맵에서도 이동
+		// 이전 좌표는 빈 공간으로
+		MapManager::Get().SetMapTile(position, ' ');
+
+		// 생존자 이동
+		position = movedPosition;
+
+		// 이동한 좌표를 플레이어 표시
+		MapManager::Get().SetMapTile(position, 'S');
+		return;
+	}
+
 	// 생존자들의 이동 반영하여 다시 경로 찾기
 	bool isFindPath = FindPath();
 
@@ -109,7 +211,6 @@ void Survivor::Move()
 		// 맵에서도 이동
 		// 이전 좌표는 빈 공간으로
 		MapManager::Get().SetMapTile(position, ' ');
-
 
 		// 생존자 이동
 		position = movedPosition;
@@ -160,6 +261,19 @@ void Survivor::Move()
 		position = bestMovePosition;
 		MapManager::Get().SetMapTile(position, 'S');
 	}
+}
+
+void Survivor::CommandMoveTo(const Vector2& targetPosition)
+{
+	hasCommandMove = true;
+	isReachTarget = false;
+	commandTargetPosition = targetPosition;
+
+	// 이전에 가던 길 (출구로 향하던) 삭제
+	path.clear();
+
+	// 명령내린 목적지로 경로 업데이트
+	path = astar->FindPathToTarget(new Node(position), commandTargetPosition);
 }
 
 Color Survivor::GetPathColor()

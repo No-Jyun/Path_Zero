@@ -15,13 +15,15 @@ public:
 	// startNode : 시작 지점
 	std::vector<Node*> FindPath(Node* startNode);
 
+	std::vector<Node*> FindPathToTarget(Node* startNode, const Vector2& targetPosition);
+
 	// 재탐색을 위해 클리어 함수
 	void ClearSetting();
 
 private:
 	// 탐색을 완료한 후에 최적 경로를 반환하는 함수
 	// 부모 링크를 따라가면서 역추적
-	std::vector<Node*> ConstructPath(Node* goalNode);
+	std::vector<Node*> ConstructPath(Node* goalNode, bool isReverse = true);
 
 	// 휴리스틱 (hCost) 계산 함수
 	float CalculateHeuristic(Node* currentNode, Node* goalNode);

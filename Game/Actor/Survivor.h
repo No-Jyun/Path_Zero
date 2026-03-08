@@ -16,13 +16,18 @@ public:
 	Survivor(const Vector2& position, Color color);
 	~Survivor();
 
+	virtual void BeginPlay() override;
 	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;
 
-	void Move();
+	void MoveToExitOrTarget();
+
+	void CommandMoveTo(const Vector2& targetPosition);
 
 private:
 	bool FindPath();
+
+	bool FindPathToTarget();
 
 	Color GetPathColor();
 
@@ -31,6 +36,16 @@ private:
 
 	std::vector<class Node*> path;
 
+	// 목적지 도달 후 대기 시간
 	Timer timer;
+
+	// 플레이어가 직접 이동 명령을 내렸는지 저장하는 변수
+	bool hasCommandMove = false;
+
+	// 목적지에 도달했는지 확인하는 함수
+	bool isReachTarget = false;
+
+	// 명령한 목적지 좌표
+	Vector2 commandTargetPosition;
 };
 
