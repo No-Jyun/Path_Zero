@@ -7,6 +7,18 @@
 
 AStar::AStar()
 {
+	int width = MapManager::Get().GetMapWidth();
+	int height = MapManager::Get().GetMapHeight();
+
+	nodePool.assign(height, std::vector<Node>(width, Node(Vector2::Zero)));
+
+	for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			nodePool[y][x].position = Vector2(x, y);
+		}
+	}
 }
 
 AStar::~AStar()
@@ -15,24 +27,21 @@ AStar::~AStar()
 	ClearSetting();
 }
 
-std::vector<Node*> AStar::FindPath(Node* startNode)
+std::vector<Node*> AStar::FindPath(const Vector2& startNode)
 {
 	ClearSetting();
 
 	// 시작 노드 (현재 위치) 를 목적지로 설정
-	this->goalNode = startNode;
-
-	// 방문 비용 배열 초기화
-	visitedGCost.assign(MapManager::Get().GetMapHeight(), std::vector<float>(MapManager::Get().GetMapWidth(), FLT_MAX));
+	this->goalNode = &nodePool[startNode.y][startNode.x];
 
 	// 탈출구를 열린 리스트에 추가 및 탐색 시작
 	const auto& exitPos = MapManager::Get().GetExitPositions();
 	for (const Vector2& exit : exitPos)
 	{
-		openList.push(new Node(exit, nullptr));
+		openList.push(&nodePool[exit.y][exit.x]);
 
 		// 방문 배열 설정
-		visitedGCost[exit.y][exit.x] = 0.0f;
+		nodePool[exit.y][exit.x].gCost = 0.0f;
 	}
 
 	int directionLength = Direction::direction8Length;
@@ -51,9 +60,6 @@ std::vector<Node*> AStar::FindPath(Node* startNode)
 			// 경로 반환 후 종료
 			return ConstructPath(currentNode);
 		}
-
-		// 현재 노드를 방문 노드에 추가
-		closedList.emplace_back(currentNode);
 
 		// 이웃 노드 방문 (탐색)
 		for (int directionIndex = 0; directionIndex < directionLength; directionIndex++)
@@ -101,14 +107,12 @@ std::vector<Node*> AStar::FindPath(Node* startNode)
 			}
 
 			// 방문을 위한 이웃 노드 생성
-			Node* neighborNode = new Node(newPosition, currentNode);
+			Node* neighborNode = &nodePool[newPosition.y][newPosition.x];
 			// 비용 계산
+			neighborNode->parentNode = currentNode;
 			neighborNode->gCost = newGCost;
 			neighborNode->hCost = CalculateHeuristic(neighborNode, this->goalNode);
 			neighborNode->fCost = neighborNode->gCost + neighborNode->hCost;
-
-			// 방문 노드 저장값 갱신
-			visitedGCost[newPosition.y][newPosition.x] = newGCost;
 
 			// 열린 리스트에 추가
 			openList.push(neighborNode);
@@ -118,23 +122,21 @@ std::vector<Node*> AStar::FindPath(Node* startNode)
 	return std::vector<Node*>();
 }
 
-std::vector<Node*> AStar::FindPathToTarget(Node* startNode, const Vector2& targetPosition)
+std::vector<Node*> AStar::FindPathToTarget(const Vector2& startNode, const Vector2& targetPosition)
 {
 	ClearSetting();
 
 	// 목적지로 설정 -> 정방향 탐색
-	this->goalNode = new Node(targetPosition, nullptr);
-
-	// 방문 비용 배열 초기화
-	visitedGCost.assign(MapManager::Get().GetMapHeight(), std::vector<float>(MapManager::Get().GetMapWidth(), FLT_MAX));
+	this->goalNode = &nodePool[targetPosition.y][targetPosition.x];
 
 	// 목표지점 하나만 열린 리스트에 추가 및 탐색 시작
-	openList.push(startNode);
-	visitedGCost[startNode->position.y][startNode->position.x] = 0.0f;
+	Node* startNodePtr = &nodePool[startNode.y][startNode.x];
+	openList.push(startNodePtr);
+	startNodePtr->gCost = 0.0f;
 
 	// 가장 목표와 가까웠던 노드를 기억할 변수
-	Node* closestNode = startNode;
-	float minHCost = CalculateHeuristic(startNode, this->goalNode);
+	Node* closestNode = startNodePtr;
+	float minHCost = CalculateHeuristic(startNodePtr, this->goalNode);
 
 	int directionLength = Direction::direction8Length;
 
@@ -160,9 +162,6 @@ std::vector<Node*> AStar::FindPathToTarget(Node* startNode, const Vector2& targe
 			return ConstructPath(currentNode, false);
 		}
 
-		// 현재 노드를 방문 노드에 추가
-		closedList.emplace_back(currentNode);
-
 		// 이웃 노드 방문 (탐색)
 		for (int directionIndex = 0; directionIndex < directionLength; directionIndex++)
 		{
@@ -209,14 +208,12 @@ std::vector<Node*> AStar::FindPathToTarget(Node* startNode, const Vector2& targe
 			}
 
 			// 방문을 위한 이웃 노드 생성
-			Node* neighborNode = new Node(newPosition, currentNode);
+			Node* neighborNode = &nodePool[newPosition.y][newPosition.x];
 			// 비용 계산
+			neighborNode->parentNode = currentNode;
 			neighborNode->gCost = newGCost;
 			neighborNode->hCost = CalculateHeuristic(neighborNode, this->goalNode);
 			neighborNode->fCost = neighborNode->gCost + neighborNode->hCost;
-
-			// 방문 노드 저장값 갱신
-			visitedGCost[newPosition.y][newPosition.x] = newGCost;
 
 			// 열린 리스트에 추가
 			openList.push(neighborNode);
@@ -225,7 +222,7 @@ std::vector<Node*> AStar::FindPathToTarget(Node* startNode, const Vector2& targe
 	
 	// 경로를 찾지 못한 경우
 	// 시작점이 가장 가까운 노드라면 빈 경로 반환
-	if (closestNode == startNode)
+	if (closestNode == startNodePtr)
 	{
 		return std::vector<Node*>();
 	}
@@ -350,14 +347,8 @@ bool AStar::HasVisited(const Vector2& curPos, float gCost)
 	// gCost를 비교하는 이유
 	// 해당 위치의 휴리스틱 값 (hCost) 는 동일하므로 
 	// 실제 이동 비용인 gCost만 비교하면 됨
-	// 방문 배열에 저장된 값보다 크거나 같으면 방문 처리
-	if (visitedGCost[curPos.y][curPos.x] <= gCost)
-	{
-		return true;
-	}
-
-	// 그외는 방문해야 하므로 true 반환
-	return false;
+	// 노드에 저장된 값보다 크거나 같으면 방문한 곳임
+	return nodePool[curPos.y][curPos.x].gCost <= gCost;
 }
 
 bool AStar::IsDestination(const Node* const node)
@@ -371,18 +362,18 @@ void AStar::ClearSetting()
 	// 메모리 정리
 	while (!openList.empty())
 	{
-		Node* node = openList.top();
 		openList.pop();
-		SafeDelete(node);
 	}
 
-	for (Node* node : closedList)
+	// 한번 사용한 노드 데이터 초기화
+	for (auto& row : nodePool)
 	{
-		SafeDelete(node);
+		for (auto& node : row)
+		{
+			node.gCost = FLT_MAX;
+			node.hCost = 0.0f;
+			node.fCost = 0.0f;
+			node.parentNode = nullptr;
+		}
 	}
-	closedList.clear();
-
-	SafeDelete(goalNode);
-
-	std::vector<std::vector<float>>().swap(visitedGCost);
 }

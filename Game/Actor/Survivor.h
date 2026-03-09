@@ -14,7 +14,7 @@ class Survivor: public Actor
 
 public:
 	Survivor(const char* text, const Vector2& position, Color color);
-	~Survivor();
+	virtual ~Survivor();
 
 	virtual void BeginPlay() override;
 	virtual void Tick(float deltaTime) override;

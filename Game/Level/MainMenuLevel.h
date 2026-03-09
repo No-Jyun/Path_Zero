@@ -61,7 +61,7 @@ class MainMenuLevel : public Level
 
 public:
 	MainMenuLevel();
-	~MainMenuLevel();
+	virtual ~MainMenuLevel();
 
 	// 이벤트 함수 오버라이드
 	virtual void Tick(float deltaTime) override;

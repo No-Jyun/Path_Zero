@@ -230,11 +230,8 @@ bool EditMouse::IsExitable()
 	// 모든 플레이어에 대해 탈출 경로가 있는지 확인
 	for (const Vector2& position : MapManager::Get().GetSurvivorPositions())
 	{
-		// 노드 생성
-		Node* survivorNode = new Node(position);
-
 		// 경로 탐색
-		auto path = astar.FindPath(survivorNode);
+		auto path = astar.FindPath(position);
 
 		// 경로가 없을 경우 탈출불가
 		if (path.empty())

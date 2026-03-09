@@ -10,7 +10,7 @@ class EscapeMouse : public MouseBase
 
 public:
 	EscapeMouse(const Vector2& position, std::vector<class Survivor*>* allSurvivors);
-	~EscapeMouse();
+	virtual ~EscapeMouse();
 
 	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;

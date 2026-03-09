@@ -12,7 +12,7 @@ class EscapeLevel : public Level
 
 public:
 	EscapeLevel();
-	~EscapeLevel();
+	virtual ~EscapeLevel();
 
 	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;

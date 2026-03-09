@@ -28,7 +28,7 @@ struct PauseMenuItem
 		}
 	}
 
-	~PauseMenuItem()
+	virtual ~PauseMenuItem()
 	{
 		if (text)
 		{

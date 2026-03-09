@@ -31,7 +31,7 @@ void Survivor::BeginPlay()
 	super::BeginPlay();
 
 	// 액터 첫 시작시 경로 검색 및 저장
-	path = astar->FindPath(new Node(position));
+	path = astar->FindPath(position);
 }
 
 void Survivor::Tick(float deltaTime)
@@ -75,7 +75,7 @@ void Survivor::Draw()
 bool Survivor::FindPath()
 {
 	// 탈출구까지의 A* 알고리즘 적용 및 경로 저장
-	path = astar->FindPath(new Node(position));
+	path = astar->FindPath(position);
 
 	// 경로를 못찾은 경우
 	if (path.empty())
@@ -90,7 +90,7 @@ bool Survivor::FindPath()
 bool Survivor::FindPathToTarget(const Vector2& targetPosition)
 {
 	// 목적지까지 A* 알고리즘 적용 및 경로 저장
-	path = astar->FindPathToTarget(new Node(position), targetPosition);
+	path = astar->FindPathToTarget(position, targetPosition);
 
 	// 경로를 못 찾은 경우
 	if (path.empty())
@@ -261,7 +261,7 @@ void Survivor::CommandMoveTo(const Vector2& targetPosition)
 	path.clear();
 
 	// 명령내린 목적지로 경로 업데이트
-	path = astar->FindPathToTarget(new Node(position), commandTargetPosition);
+	path = astar->FindPathToTarget(position, commandTargetPosition);
 }
 
 Color Survivor::GetPathColor()

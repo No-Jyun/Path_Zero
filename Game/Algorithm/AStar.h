@@ -13,9 +13,9 @@ public:
 
 	// 경로 검색 (탐색) 함수
 	// startNode : 시작 지점
-	std::vector<Node*> FindPath(Node* startNode);
+	std::vector<Node*> FindPath(const Vector2& startNode);
 
-	std::vector<Node*> FindPathToTarget(Node* startNode, const Vector2& targetPosition);
+	std::vector<Node*> FindPathToTarget(const Vector2& startNode, const Vector2& targetPosition);
 
 	// 재탐색을 위해 클리어 함수
 	void ClearSetting();
@@ -51,11 +51,8 @@ private:
 	// 열린 리스트 (우선순위 큐를 사용하여 fCost가 가장 낮은 노드가 Top에 오도록 정렬됨)
 	std::priority_queue<Node*, std::vector<Node*>, Node::PtrCompare> openList;
 
-	// 닫힌 리스트
-	std::vector<Node*> closedList;
-
-	// 방문 확인 및 비용 저장용 배열
-	std::vector<std::vector<float>> visitedGCost;
+	// 노드를 담아둘 2차원 배열
+	std::vector<std::vector<Node>> nodePool;
 
 	// 목표 노드
 	Node* goalNode = nullptr;

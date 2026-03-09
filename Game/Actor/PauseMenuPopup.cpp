@@ -32,6 +32,16 @@ PauseMenuPopup::PauseMenuPopup()
 
 PauseMenuPopup::~PauseMenuPopup()
 {
+	// 메뉴 아이템 제거
+	for (PauseMenuItem*& item : menuItems)
+	{
+		delete item;
+		item = nullptr;
+	}
+
+	// 배열 초기화
+	menuItems.clear();
+
 }
 
 void PauseMenuPopup::Tick(float deltaTime)
