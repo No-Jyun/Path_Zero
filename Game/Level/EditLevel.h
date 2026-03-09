@@ -34,6 +34,6 @@ private:
 
 	Vector2 fireLogPosition = Vector2::Zero;
 	int fireLogIndex = 22;
-	int fireSpredSpeed = 6;
+	int fireSpredSpeed = 4;
 };
 

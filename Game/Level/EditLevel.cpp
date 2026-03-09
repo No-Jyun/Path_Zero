@@ -34,7 +34,7 @@ static const char* instructionString[] =
 	"생존자의 이동속도를 조정하고 싶으면 클릭하세요.",
 	"1 - 10 (기본 6) 높을수록 빨라집니다. / 현재 : ",
 	"불의 확산속도를 조정하고 싶으면 클릭하세요.",
-	"1 - 10 (기본 6) 높을수록 빨라집니다. / 현재 : ",
+	"1 - 10 (기본 4) 높을수록 빨라집니다. / 현재 : ",
 	" ",
 	"로그",
 	" ",
@@ -109,7 +109,8 @@ void EditLevel::LevelSetting()
 	LogManager::Get().Initialize(logVector);
 
 	survivorMovementSpeed = 6;
-	fireSpredSpeed = 6;
+	fireSpredSpeed = 4;
+	Game::Get().SetSpeedIndexs(survivorMovementSpeed - 1, fireSpredSpeed - 1);
 }
 
 void EditLevel::DrawMap()

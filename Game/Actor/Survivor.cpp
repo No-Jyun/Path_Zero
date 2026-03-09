@@ -222,7 +222,7 @@ void Survivor::MoveToExitOrTarget()
 
 		// 로그 출력
 		char buffer[128];
-		sprintf_s(buffer, 128, "[%s] 탈출 경로가 차단되어 가장 안전한 곳으로 도망칩니다!", image);
+		sprintf_s(buffer, 128, "%s번 생존자가 탈출 경로가 차단되어 가장 안전한 곳으로 도망칩니다!", image);
 		LogManager::Get().PrintLog(buffer, GetPathColor());
 	}
 

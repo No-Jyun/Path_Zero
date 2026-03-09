@@ -45,8 +45,6 @@ static const float survivorMovementSpeed[10] =
 
 static const float fireSpreadSpeed[10] =
 {
-	4.0f,
-	3.0f,
 	2.75f,
 	2.5f,
 	2.25f,
@@ -54,7 +52,9 @@ static const float fireSpreadSpeed[10] =
 	1.75f,
 	1.5f,
 	1.25f,
-	1.0f
+	1.0f,
+	0.75f,
+	0.5f,
 };
 
 EscapeLevel::EscapeLevel()
@@ -247,6 +247,9 @@ void EscapeLevel::Draw()
 void EscapeLevel::LevelClear()
 {
 	mouseActor->SelectPositionClear();
+
+	survivorMovementSpeedIndex = 5;
+	fireSpreadSpeedIndex = 5;
 }
 
 void EscapeLevel::LevelSetting()
@@ -292,6 +295,12 @@ void EscapeLevel::Initialize()
 
 	survivorMovementSpeedIndex = Game::Get().GetSurvivorSpeedIndex();
 	fireSpreadSpeedIndex = Game::Get().GetFireSpeedIndex();
+
+	survivorMoveTimer.SetTargetTime(
+		survivorMovementSpeed[survivorMovementSpeedIndex]);
+
+	fireSpreadTimer.SetTargetTime(
+		fireSpreadSpeed[fireSpreadSpeedIndex]);
 }
 
 void EscapeLevel::DrawMap()
