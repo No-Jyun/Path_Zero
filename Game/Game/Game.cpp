@@ -77,3 +77,9 @@ Game& Game::Get()
 	// 정적 변수 반환
 	return *instance;
 }
+
+void Game::SetSpeedIndexs(const int survivorMovementSpeed, const int fireSpreadSpeed)
+{
+	this->survivorMovementSpeed = survivorMovementSpeed;
+	this->fireSpreadSpeed = fireSpreadSpeed;
+}

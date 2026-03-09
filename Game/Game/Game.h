@@ -17,6 +17,10 @@ public:
 	// 싱글톤 접근 함수
 	static Game& Get();
 
+	void SetSpeedIndexs(const int survivorMovementSpeed, const int fireSpreadSpeed);
+	inline const int GetSurvivorSpeedIndex() { return survivorMovementSpeed; }
+	inline const int GetFireSpeedIndex() { return fireSpreadSpeed; }
+
 private:
 	// 게임에서 관리하는 레벨을 저장할 배열
 	std::vector<Level*> levels;
@@ -29,4 +33,7 @@ private:
 
 	// 싱글톤 구현을 위한 정적 변수
 	static Game* instance;
+
+	int survivorMovementSpeed = 6;
+	int fireSpreadSpeed = 6;
 };

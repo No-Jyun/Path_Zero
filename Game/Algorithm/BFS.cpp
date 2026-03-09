@@ -101,9 +101,9 @@ std::vector<Vector2> BFS::FindSpreadableTile()
 		queue.pop();
 
 		// 8방향 안이쁨
-		for (int dir = 0; dir < Direction::direction4Length; dir++)
+		for (int dir = 0; dir < Direction::directionFireLength; dir++)
 		{
-			Vector2 nextPos = nowPos + Direction::fourDirection[dir];
+			Vector2 nextPos = nowPos + Direction::fireDirection[dir];
 
 			// 불타일은 맵경계를 벗어날 수 있으므로 예외 처리
 			if (IsOutMap(nextPos))

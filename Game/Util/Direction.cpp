@@ -21,3 +21,8 @@ const float Direction::directionCost[direction8Length]
     1.0f, diagnalCost, 1.0f, diagnalCost,
     1.0f, diagnalCost, 1.0f, diagnalCost
 };
+
+// 4방향 (콘솔 좌표 기준으로 북/동/남/서)
+const Vector2 Direction::fireDirection[directionFireLength] = {
+    Vector2(0, -1), Vector2(1, 0), Vector2(2, 0), Vector2(0, 1),Vector2(-1, 0), Vector2(-2, 0)
+};

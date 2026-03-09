@@ -1,5 +1,6 @@
 #pragma once
 #include "Level/Level.h"
+#include "Math/Vector2.h"
 
 using namespace Wanted;
 
@@ -12,6 +13,7 @@ public:
 	EditLevel();
 	~EditLevel();
 
+	virtual void Tick(float deltaTime) override;
 	virtual void Draw() override;
 	virtual void LevelSetting() override;
 	
@@ -25,5 +27,13 @@ private:
 private:
 	// 로그 액터 저장하는 배열
 	std::vector<class LogActor*> logVector;
+
+	Vector2 survivorLogPosition = Vector2::Zero;
+	int survivorLogIndex = 20;
+	int survivorMovementSpeed = 6;
+
+	Vector2 fireLogPosition = Vector2::Zero;
+	int fireLogIndex = 22;
+	int fireSpredSpeed = 6;
 };
 

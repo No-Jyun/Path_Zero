@@ -13,5 +13,9 @@ struct Direction
 
 	static const Vector2 fourDirection[direction4Length];
 
+	static const int directionFireLength = 6;
+
+	static const Vector2 fireDirection[directionFireLength];
+
 	static const float directionCost[direction8Length];
 };

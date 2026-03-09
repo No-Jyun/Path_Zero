@@ -5,6 +5,9 @@
 #include "Render/Renderer.h"
 #include "Actor/EditMouse.h"
 #include "Actor/LogActor.h"
+#include "Core/Input.h"
+
+#include <string>
 
 static const char* instructionString[] =
 {
@@ -28,6 +31,10 @@ static const char* instructionString[] =
 	" ",
 	"현재 상황에서 탈출 경로가 없는 경우 맵을 다시 제작해야 합니다.",
 	" ",
+	"생존자의 이동속도를 조정하고 싶으면 클릭하세요.",
+	"1 - 10 (기본 6) 높을수록 빨라집니다. / 현재 : ",
+	"불의 확산속도를 조정하고 싶으면 클릭하세요.",
+	"1 - 10 (기본 6) 높을수록 빨라집니다. / 현재 : ",
 	" ",
 	"로그",
 	" ",
@@ -57,6 +64,35 @@ EditLevel::~EditLevel()
 	std::vector<LogActor*>().swap(logVector);
 }
 
+void EditLevel::Tick(float deltaTime)
+{
+	super::Tick(deltaTime);
+
+	// 마우스 클릭 검사
+	if (Input::Get().GetMouseButtonDown(0))
+	{
+		Vector2 mousePos = Input::Get().MousePosition();
+
+		// 마우스가 생존자 이동 속도 문구 위라면 생존자 이동 속도 증가
+		if (mousePos.x >= survivorLogPosition.x && mousePos.x <= survivorLogPosition.x + 
+			static_cast<int>(strlen(instructionString[survivorLogIndex])) - 1 &&
+			mousePos.y == survivorLogPosition.y)
+		{
+			survivorMovementSpeed = survivorMovementSpeed % 10 + 1;
+		}
+
+		// 마우스가 불 확산 속도 문구 위라면 불 확산 속도 증가
+		else if (mousePos.x >= fireLogPosition.x && mousePos.x <= fireLogPosition.x +
+			static_cast<int>(strlen(instructionString[fireLogIndex])) - 1 &&
+			mousePos.y == fireLogPosition.y)
+		{
+			fireSpredSpeed = fireSpredSpeed % 10 + 1;
+		}
+
+		Game::Get().SetSpeedIndexs(survivorMovementSpeed - 1, fireSpredSpeed - 1);
+	}
+}
+
 void EditLevel::Draw()
 {
 	super::Draw();
@@ -71,6 +107,9 @@ void EditLevel::LevelSetting()
 
 	// 로그 매니저 사용 준비
 	LogManager::Get().Initialize(logVector);
+
+	survivorMovementSpeed = 6;
+	fireSpredSpeed = 6;
 }
 
 void EditLevel::DrawMap()
@@ -95,6 +134,7 @@ void EditLevel::DrawInstruction()
 
 	int offsetX = MapManager::Get().GetMapWidth() + 5;
 
+	static std::string logText[2];
 	for (int i = 0; i < length; i++)
 	{
 		Vector2 drawPosition = Vector2(offsetX, 1);
@@ -104,6 +144,28 @@ void EditLevel::DrawInstruction()
 		if (i == length - 2)
 		{
 			Renderer::Get().Submit(instructionString[i], drawPosition, Color::LightRed);
+		}
+		else if (i == survivorLogIndex)
+		{
+			survivorLogPosition = drawPosition;
+			Renderer::Get().Submit(instructionString[i], drawPosition, Color::LightGreen);
+		}
+		else if (i == survivorLogIndex + 1)
+		{
+			logText[0] = std::string(instructionString[i]);
+			logText[0] += std::to_string(survivorMovementSpeed);
+			Renderer::Get().Submit(logText[0].c_str(), drawPosition);
+		}
+		else if (i == fireLogIndex)
+		{
+			fireLogPosition = drawPosition;
+			Renderer::Get().Submit(instructionString[i], drawPosition, Color::LightRed);
+		}
+		else if (i == fireLogIndex + 1)
+		{
+			logText[1] = std::string(instructionString[i]);
+			logText[1] += std::to_string(fireSpredSpeed);
+			Renderer::Get().Submit(logText[1].c_str(), drawPosition);
 		}
 		else
 		{

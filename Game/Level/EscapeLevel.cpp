@@ -29,11 +29,39 @@ static const char* gameEndLogString[] =
 	"5초 후에 메인 화면으로 돌아갑니다."
 };
 
+static const float survivorMovementSpeed[10] =
+{
+	1.0f,
+	0.9f,
+	0.8f,
+	0.7f,
+	0.6f,
+	0.5f,
+	0.4f,
+	0.3f,
+	0.2f,
+	0.1f
+};
+
+static const float fireSpreadSpeed[10] =
+{
+	4.0f,
+	3.0f,
+	2.75f,
+	2.5f,
+	2.25f,
+	2.0f,
+	1.75f,
+	1.5f,
+	1.25f,
+	1.0f
+};
+
 EscapeLevel::EscapeLevel()
 {
 	// Todo: 속도 조정
-	fireSpreadTimer.SetTargetTime(2.0f);
-	survivorMoveTimer.SetTargetTime(0.4f);
+	fireSpreadTimer.SetTargetTime(fireSpreadSpeed[fireSpreadSpeedIndex]);
+	survivorMoveTimer.SetTargetTime(survivorMovementSpeed[survivorMovementSpeedIndex]);
 	gameEndTimer.SetTargetTime(2.0f);
 
 	// 마우스 액터 생성
@@ -261,6 +289,9 @@ void EscapeLevel::Initialize()
 
 	// 로그 매니저 사용 준비
 	LogManager::Get().Initialize(logVector);
+
+	survivorMovementSpeedIndex = Game::Get().GetSurvivorSpeedIndex();
+	fireSpreadSpeedIndex = Game::Get().GetFireSpeedIndex();
 }
 
 void EscapeLevel::DrawMap()
