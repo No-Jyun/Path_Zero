@@ -21,11 +21,20 @@ static const char* instructionString[] =
 	" ",
 };
 
+static const char* gameEndLogString[] =
+{
+	"게임이 종료 되었습니다...",
+	"%d명이 탈출했습니다!",
+	"%d명이 불길에 휩싸였습니다...",
+	"5초 후에 메인 화면으로 돌아갑니다."
+};
+
 EscapeLevel::EscapeLevel()
 {
 	// Todo: 속도 조정
 	fireSpreadTimer.SetTargetTime(2.0f);
 	survivorMoveTimer.SetTargetTime(0.4f);
+	gameEndTimer.SetTargetTime(2.0f);
 
 	// 마우스 액터 생성
 	mouseActor = new EscapeMouse(Vector2(0, Game::Get().Height() - 1), &survivorVector);
@@ -96,7 +105,7 @@ void EscapeLevel::Tick(float deltaTime)
 			{
 				// 로그 출력
 				char buffer[128];
-				sprintf_s(buffer, 128, "[%s] 생존자가 불길에 휩싸였습니다...", curSurv->GetImage());
+				sprintf_s(buffer, 128, "%s번 생존자가 불길에 휩싸였습니다...", curSurv->GetImage());
 				LogManager::Get().PrintLog(buffer, curSurv->GetColor());
 
 				// 생존자 액터 사망 처리
@@ -104,6 +113,8 @@ void EscapeLevel::Tick(float deltaTime)
 
 				// 벡터에서 제거
 				iterator = survivorVector.erase(iterator);
+
+				burnSurvivorNum++;
 			}
 			else
 			{
@@ -117,6 +128,11 @@ void EscapeLevel::Tick(float deltaTime)
 	{
 		// 타이머 리셋
 		survivorMoveTimer.Reset();
+
+		if (survivorVector.empty())
+		{
+			return;
+		}
 
 		// 생존자 이동 순서는 랜덤으로 결정
 		Util::ShuffleVector(survivorVector);
@@ -134,12 +150,60 @@ void EscapeLevel::Tick(float deltaTime)
 			{
 				// survivorVector에서 생존자 제거 및 다음 요소 가리키게 이동
 				iterator = survivorVector.erase(iterator);
+
+				exitSurvivorNum++;
 			}
 			else
 			{
 				// 파괴되지 않았다면 다음 생존자
 				iterator++;
 			}
+		}
+	}
+
+	// 생존자가 맵에 존재하지 않으면 게임 종료
+	if (survivorVector.empty())
+	{
+		gameEndTimer.Tick(deltaTime);
+
+		// 대기 시간 종료시
+		if (gameEndTimer.IsTimeOut())
+		{
+			gameEndTimer.Reset();
+
+			// 1초 마다 로그 출력
+			gameEndTimer.SetTargetTime(1.0f);
+
+			if (logIndexx == 4)
+			{
+				// 메뉴 토글 함수 호출
+				Game::Get().ToggleMenu(0);
+				return;
+			}
+
+			Color color = Color::White;
+
+			char buffer[128];
+			sprintf_s(buffer, 128, gameEndLogString[logIndexx]);
+
+			if (logIndexx == 1)
+			{
+				sprintf_s(buffer, 128, gameEndLogString[logIndexx], exitSurvivorNum);
+				color = Color::LightGreen;
+			}
+			else if (logIndexx == 2)
+			{
+				sprintf_s(buffer, 128, gameEndLogString[logIndexx], burnSurvivorNum);
+				color = Color::LightRed;
+			}
+			else if(logIndexx == 3)
+			{
+				gameEndTimer.SetTargetTime(5.0f);
+			}
+
+			LogManager::Get().PrintLog(buffer, color);
+
+			logIndexx++;
 		}
 	}
 }
@@ -170,6 +234,10 @@ void EscapeLevel::LevelSetting()
 
 	// 레벨 세팅
 	Initialize();
+
+	exitSurvivorNum = 0;
+	burnSurvivorNum = 0;
+	logIndexx = 0;
 }
 
 void EscapeLevel::Initialize()

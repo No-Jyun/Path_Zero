@@ -51,5 +51,14 @@ private:
 
 	// 일시정지 팝업 액터를 저장할 변수
 	class PauseMenuPopup* pauseMenuActor = nullptr;
+
+	// 생존자가 맵에 없고 대기시간 타이머
+	Timer gameEndTimer;
+
+	int exitSurvivorNum = 0;
+
+	int burnSurvivorNum = 0;
+
+	int logIndexx = 0;
 };
 

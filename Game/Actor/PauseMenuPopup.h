@@ -5,17 +5,54 @@
 
 #include <vector>
 #include <string>
+#include <functional>
 
 using namespace Wanted;
 
 struct PauseMenuItem
 {
-	std::string text;
-	Vector2 position;
-	Vector2 size;
-	
-	// 클릭시 실행될 동작을 구분하기 위한 ID
-	int id;
+	// 메뉴 선택됐을 때 실행될 함수의 타입
+	using OnSelected = std::function<void()>;
+
+	PauseMenuItem(const char** text, int lineCount, const Vector2& topLeft, OnSelected onSelected)
+		: onSelected(onSelected), lineCount(lineCount), topLeft(topLeft)
+	{
+		this->text = new char* [lineCount];
+
+		for (int i = 0; i < lineCount; i++)
+		{
+			// 텍스트 복사
+			size_t length = strlen(text[i]) + 1;
+			this->text[i] = new char[length];
+			strcpy_s(this->text[i], length, text[i]);
+		}
+	}
+
+	~PauseMenuItem()
+	{
+		if (text)
+		{
+			for (int i = 0; i < lineCount; i++)
+			{
+				delete[] text[i];
+			}
+
+			delete[] text;
+			text = nullptr;
+		}
+	}
+
+	// 메뉴 텍스트
+	char** text = nullptr;
+	// 텍스트가 몇 줄인지 저장
+	int lineCount = 0;
+
+	// 화면 상 위치 정보
+	Vector2 topLeft = Vector2::Zero;
+	Vector2 bottomRight = Vector2::Zero;
+
+	// 메뉴 선택됐을 때 실행될 로직(함수 - 함수 포인터)
+	OnSelected onSelected = nullptr;
 };
 
 class PauseMenuPopup : public Actor
@@ -35,8 +72,12 @@ public:
 private:
 	void Initialize();
 
+	void DrawLogo();
+
+	void DrawItem();
+
 private:
-	std::vector<PauseMenuItem> menuItems;
+	std::vector<PauseMenuItem*> menuItems;
 
 	int currentIndex = -1;
 	
