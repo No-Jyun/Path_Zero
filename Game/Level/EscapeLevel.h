@@ -59,7 +59,7 @@ private:
 
 	int burnSurvivorNum = 0;
 
-	int logIndexx = 0;
+	int logIndex = 0;
 
 	int survivorMovementSpeedIndex = 6;
 	int fireSpreadSpeedIndex = 6;

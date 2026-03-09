@@ -71,12 +71,14 @@ private:
 	// 불 위치를 저장할 변수
 	std::vector<Vector2> firePositions;
 
+	// 확산 가능한 불 위치를 저장할 변수
+	std::vector<Vector2> activeFirePositions;
+
 	// 맵 크기 변수
 	int mapWidth = 0;
 	int mapHeight = 0;
-
-	// Todo: 불 타일, 탈출구 타일 개수 조정 필요
 	
+	// Todo: 불 타일, 탈출구 타일 개수 조정 필요
 	// 맵에 배치될 수 있는 최대 탈출구 개수
 	const int maxExitCount = 3;
 	// 맵에 배치될 수 있는 최대 불 개수

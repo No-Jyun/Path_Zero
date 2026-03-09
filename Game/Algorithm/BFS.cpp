@@ -77,33 +77,27 @@ std::vector<Vector2> BFS::FindExitableTile()
 	return canExitPosition;
 }
 
-std::vector<Vector2> BFS::FindSpreadableTile()
+std::vector<Vector2> BFS::FindSpreadableTile(std::vector<Vector2>& activeFirePositions)
 {
 	// BFS 용 큐 선언
-	std::queue<Vector2> queue;
+	// 결국 1번만 BFS를 도므로 큐가 필요 없음
+	//std::queue<Vector2> queue;
 
-	// 반환용 배열
-	std::vector<Vector2> canSpreadPosition;
+	// 이번에 새롭게 번질 타일 위치 배열
+	std::vector<Vector2> newFires;
 
-	// 맵의 불 위치 가져오기
-	auto& firePos = MapManager::Get().GetFirePositions();
-
-	for (const Vector2& pos : firePos)
-	{
-		queue.emplace(pos);
-		mapVisited[pos.y][pos.x] = true;
-	}
+	// 다음 턴에도 확산 가능성이 있는 타일 위치 배열
+	std::vector<Vector2> nextActiveFires;
 
 	// 현재 불타일에서 1번만 bfs 하면 됨
-	while (!queue.empty())
+	for (const Vector2& firePos : activeFirePositions)
 	{
-		Vector2 nowPos = queue.front();
-		queue.pop();
+		bool canSpread = false;
 
 		// 8방향 안이쁨
 		for (int dir = 0; dir < Direction::directionFireLength; dir++)
 		{
-			Vector2 nextPos = nowPos + Direction::fireDirection[dir];
+			Vector2 nextPos = firePos + Direction::fireDirection[dir];
 
 			// 불타일은 맵경계를 벗어날 수 있으므로 예외 처리
 			if (IsOutMap(nextPos))
@@ -111,19 +105,39 @@ std::vector<Vector2> BFS::FindSpreadableTile()
 				continue;
 			}
 
-			// 다음 위치가 방문한 위치라면 생략
-			if (mapVisited[nextPos.y][nextPos.x])
+			// Todo: 확인 필요
+			char mapTile = MapManager::Get().GetMapPositionData(nextPos);
+			if (mapTile == ' ' || mapTile == 'S')
 			{
-				continue;
-			}
+				canSpread = true;
 
-			// 불타일은 모든 타일을 덮을 수 있으므로 바로 배열에 저장
-			canSpreadPosition.emplace_back(nextPos);
-			mapVisited[nextPos.y][nextPos.x] = true;
+				// 다음 위치가 방문한 위치라면 생략
+				if (mapVisited[nextPos.y][nextPos.x])
+				{
+					continue;
+				}
+
+				newFires.emplace_back(nextPos);
+				mapVisited[nextPos.y][nextPos.x] = true;
+			}
+		}
+
+		// 최소 한 군데라도 번질 여지가 있었다면 다음에도 활성 타일로
+		if (canSpread)
+		{
+			nextActiveFires.emplace_back(firePos);
 		}
 	}
 
-	return canSpreadPosition;
+	for (const Vector2& pos : newFires)
+	{
+		nextActiveFires.emplace_back(pos);
+	}
+
+	// 활성 불 타일 갱신
+	activeFirePositions = nextActiveFires;
+
+	return newFires;
 }
 
 Vector2 BFS::FindSafestTileFromFire(const Vector2& curPosition)
@@ -208,7 +222,7 @@ Vector2 BFS::FindSafestTileFromFire(const Vector2& curPosition)
 			queue.emplace(nextPos);
 		}
 	}
-	
+
 	return bestMovePos;
 }
 

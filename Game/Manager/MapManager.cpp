@@ -39,6 +39,9 @@ void MapManager::StartGame()
 
 	// 탈출구 저장
 	FindImportantTiles();	
+
+	// BFS 처리용 불 배열 저장
+	activeFirePositions = firePositions;
 }
 
 void MapManager::Initialize()
@@ -270,7 +273,7 @@ void MapManager::SpreadFire()
 	BFS bfs;
 
 	// 확산할 타일 위치 가져오기
-	auto spreadableTile = bfs.FindSpreadableTile();
+	auto spreadableTile = bfs.FindSpreadableTile(activeFirePositions);
 
 	for (const Vector2& tilePosition : spreadableTile)
 	{

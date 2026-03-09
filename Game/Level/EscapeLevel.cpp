@@ -59,7 +59,6 @@ static const float fireSpreadSpeed[10] =
 
 EscapeLevel::EscapeLevel()
 {
-	// Todo: 속도 조정
 	fireSpreadTimer.SetTargetTime(fireSpreadSpeed[fireSpreadSpeedIndex]);
 	survivorMoveTimer.SetTargetTime(survivorMovementSpeed[survivorMovementSpeedIndex]);
 	gameEndTimer.SetTargetTime(2.0f);
@@ -202,7 +201,7 @@ void EscapeLevel::Tick(float deltaTime)
 			// 1초 마다 로그 출력
 			gameEndTimer.SetTargetTime(1.0f);
 
-			if (logIndexx == 4)
+			if (logIndex == 4)
 			{
 				// 메뉴 토글 함수 호출
 				Game::Get().ToggleMenu(0);
@@ -212,26 +211,26 @@ void EscapeLevel::Tick(float deltaTime)
 			Color color = Color::White;
 
 			char buffer[128];
-			sprintf_s(buffer, 128, gameEndLogString[logIndexx]);
+			sprintf_s(buffer, 128, gameEndLogString[logIndex]);
 
-			if (logIndexx == 1)
+			if (logIndex == 1)
 			{
-				sprintf_s(buffer, 128, gameEndLogString[logIndexx], exitSurvivorNum);
+				sprintf_s(buffer, 128, gameEndLogString[logIndex], exitSurvivorNum);
 				color = Color::LightGreen;
 			}
-			else if (logIndexx == 2)
+			else if (logIndex == 2)
 			{
-				sprintf_s(buffer, 128, gameEndLogString[logIndexx], burnSurvivorNum);
+				sprintf_s(buffer, 128, gameEndLogString[logIndex], burnSurvivorNum);
 				color = Color::LightRed;
 			}
-			else if(logIndexx == 3)
+			else if(logIndex == 3)
 			{
 				gameEndTimer.SetTargetTime(5.0f);
 			}
 
 			LogManager::Get().PrintLog(buffer, color);
 
-			logIndexx++;
+			logIndex++;
 		}
 	}
 }
@@ -268,7 +267,10 @@ void EscapeLevel::LevelSetting()
 
 	exitSurvivorNum = 0;
 	burnSurvivorNum = 0;
-	logIndexx = 0;
+
+	logIndex = 0;
+	gameEndTimer.Reset();
+	gameEndTimer.SetTargetTime(2.0f);
 }
 
 void EscapeLevel::Initialize()
