@@ -54,6 +54,12 @@ std::vector<Node*> AStar::FindPath(const Vector2& startNode)
 		Node* currentNode = openList.top();
 		openList.pop();
 
+		// 최단 비용이 새롭게 갱신된 경우
+		if (currentNode->gCost > nodePool[currentNode->position.y][currentNode->position.x].gCost) 
+		{
+			continue;
+		}
+
 		// 현재 노드가 목표 노드인지 확인
 		if (IsDestination(currentNode))
 		{
@@ -147,6 +153,12 @@ std::vector<Node*> AStar::FindPathToTarget(const Vector2& startNode, const Vecto
 		// 우선순위 큐에 있으므로 Top에 있는 노드 선택하면 됨
 		Node* currentNode = openList.top();
 		openList.pop();
+
+		// 최단 비용이 새롭게 갱신된 경우
+		if (currentNode->gCost > nodePool[currentNode->position.y][currentNode->position.x].gCost)
+		{
+			continue;
+		}
 
 		float currentHCost = CalculateHeuristic(currentNode, this->goalNode);
 		if (currentHCost < minHCost)
@@ -331,7 +343,7 @@ bool AStar::IsOtherSurvivorTile(const Vector2& position)
 	// 해당 타일이 생존자라면
 	if (MapManager::Get().GetMapPositionData(position) == 'S')
 	{
-		// 경로 탐색을 시도하는 생존자가 아닌 경우 스킵
+		// 경로 탐색을 시도하는 생존자가 아닌 경우 가중치 추가
 		if (position != goalNode->position)
 		{
 			// 함수명을 봐선 true 반환이지만 일관성을 위해 false 반환

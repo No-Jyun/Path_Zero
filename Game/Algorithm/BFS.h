@@ -32,6 +32,8 @@ private:
 	// 맵 경계를 벗어났는지 확인하는 함수
 	bool IsOutMap(const Vector2& position);
 
+	bool IsBlocked(const Vector2& curPos, const Vector2& direction);
+
 private:
 	// 맵 정보를 저장할 배열
 	std::vector<std::string> mapData;
